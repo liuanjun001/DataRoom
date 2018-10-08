@@ -42,8 +42,8 @@
               else {
             	  tree.tree('check', node.target);
               }
-              if(opts.onSelect!=null){
-            	  opts.onSelect(node) ;   
+              if(opts.onSelect!=null&&node.checkState=='checked'){
+            	//  opts.onSelect(node) ;   
               }
 			 
 		  }
@@ -66,18 +66,18 @@
 	              if( opts.onCheck!=null){
 				  opts.onCheck(node, checked);
 				  }
-	              if(!opts.muiltselect&&opts.onSelect!=null){
+	              if(!opts.muiltselect&&opts.onSelect!=null&&node.checkState=='checked'){
 	            	  opts.onSelect(node) ;
 	            	}
 			  } ,
          checkbox:opts.checkbox,data:opts.data, onLoadSuccess: function (node, data) {
              //取消checkbox的默认行为
-             $(this).find('span.tree-checkbox0').unbind().click(function () {
+            /* $(this).find('span.tree-checkbox0').unbind().click(function () {
                  return false;
              });
              $(this).find('span.tree-checkbox1').unbind().click(function () {
                  return false;
-             });
+             });*/
          }
 	 });
 	  $(".tree-icon,.tree-file").removeClass("tree-icon tree-file");

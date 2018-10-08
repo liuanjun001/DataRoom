@@ -28,13 +28,14 @@
  .chartitempaneldiv{
 width: calc((100% - 40px) /3);
     margin-left: 10px;
-    margin-top: 10px;
-        max-width: 751px;
-    height: 294px;
+    margin-top: 0px;
+    max-width: 751px;
+    min-height: 294px;
+    margin-bottom:20px;
     background-color: white;	
 }
- .cus_w_space{width:10px}
-  .cus_h_space{height:10px}
+ .cus_w_space{width:20px}
+ .cus_h_space{height:10px}
  .targetiditem{
  cursor:pointer;
  width:25px;
@@ -47,9 +48,9 @@ width: calc((100% - 40px) /3);
  }
  
  .timediv{  
- cursor:pointer;display:flex;justify-content:space-between;height:30px;line-height:30px;
+ cursor:pointer;display:flex;justify-content:center;height:34px;line-height:32px;
  background-color:#ffffff;color:#666666;font-size:14px;border-style: solid; 
- border-width: 1px;border-color: #e1e1e1;border-radius:0px;padding:2px;width:90px
+ border-width: 1px;border-color: #e1e1e1;border-radius:0px; width:100px
  }
   
 
@@ -87,6 +88,7 @@ width: calc((100% - 40px) /3);
 //	 $("#targetselectdiv").empty();
  	  addanalyseitem();
  	  addanalyseitem();
+ 	 adddatetotimeset(new Date());
 }
 function gettimeset(){
 	   var timedivs=$(".timediv");
@@ -204,7 +206,7 @@ function showanalyseAddressTargetResult(data,callobj){
 		}
 	}
 	$(".targetiditem").on("click",function(){
-		var chart=$(".chartitem");
+		var chart=$(".chartitempaneldiv");
 		var targetindex=$(this).data("index");
 		var opacity=$(this).data("opacity");
 		if(opacity==null||opacity==0){
@@ -226,15 +228,15 @@ function showanalyseAddressTargetResult(data,callobj){
 var analyseitemseq=0;
 function addanalyseitem(){
 	if( $(".analyseitem").length>=6){
-		adddatetotimeset(date);	
+		//adddatetotimeset(date);	
 		alert("分析项最多不能超过6个");
 		return;
 	}
 	analyseitemseq++;
-	var html='<div class="analyseitem" style="display:flex;;height:44px; justify-content:space-between;flex-direction:row;align-items:center;width:calc((100% - 100px)/2);min-width:460px" >'+
- 		  ' <div style="width:80px;">空间位置</div>'+
-		'<div class="btn-group dropdown"  style="cursor:pointer;border-width: 0px; min-width:100px;width:calc((100% - 230px)) ;">'+
-		'	<button type="button" id="btn_dropdown_toggle'+analyseitemseq+'" class="btn cus_select dropdown-toggle" style="width:100%; display:flex;justify-content:space-between;align-items:center" data-toggle="dropdown">'+
+	var html='<div class="analyseitem" style="display:flex;height:54px; justify-content:space-between;flex-direction:row;align-items:center;width:calc((100% - 10px) / 2);min-width:600px;padding-right:40px" >'+
+ 		  ' <div style="width:90px;padding-right:10px">空间位置</div>'+
+		'<div class="btn-group dropdown"  style="cursor:pointer;border-width: 0px; min-width:100px;width:calc((100% - 230px)) ;height:34px">'+
+		'	<button type="button" id="btn_dropdown_toggle'+analyseitemseq+'" class="btn cus_select dropdown-toggle" style="width:100%; display:flex;height:34px;justify-content:space-between;align-items:center" data-toggle="dropdown">'+
 		'		<span id="btn_select_address'+analyseitemseq+'" data-seq="'+analyseitemseq+'">请选择位置</span>'+
 		'		<span class="caret_2"></span>'+
 		'	</button>'+
@@ -243,13 +245,13 @@ function addanalyseitem(){
 		'	</div>'+
 		'</div> '+
 		 '  <div class="cus_w_space"></div>'+
-		 '  <div style="width:80px;">能耗指标</div>'+
-		'<select style="min-width:130px;height:40px; " class="cus_select" id="cb_targetid_'+analyseitemseq+'" data-seq="'+analyseitemseq+'">'+
+		 '  <div style="width:90px;padding-right:10px">能耗指标</div>'+
+		'<select style="min-width:130px;height:34px; " class="cus_select" id="cb_targetid_'+analyseitemseq+'" data-seq="'+analyseitemseq+'">'+
 		   '<option value="" disabled="disabled" selected="selected">请选择指标</option>'+
 		  ' </select>'+
 		
-		'<div style="display:flex; flex-direction:row;justify-content:flex-start;width:62px;padding-left:20px;"> '+
-		 '<div class="removebtn removebutton" ></div><div class="cus_w_space"></div>'+
+		'<div style="display:flex; flex-direction:row;justify-content:flex-start;width:62px;padding-left:10px;"> '+
+		 '<div class="removebtn removebutton" ></div>'+
 		 ' <div class="addbtn addbutton" ></div>'+
 		 
 		' </div></div>';
@@ -259,8 +261,10 @@ function addanalyseitem(){
 	if($(".removebutton").length==1){
 		$(".removebutton").hide();
 	}else{
+		 
 		$(".removebutton").show();
 	}
+	$(".removebutton:last").hide();
 	 $(".addbutton").unbind("click").bind("click",addanalyseitem);
 	 $(".removebutton").unbind("click").bind("click",function(event){
 		 var removeitem=$(event.target).parent().parent();
@@ -269,9 +273,10 @@ function addanalyseitem(){
 			if($(".removebutton").length==1){
 				$(".removebutton").hide();
 			}else{
+				
 				$(".removebutton").show();
 			}
-
+			$(".removebutton:last").hide();
 	 });
 	var addresstree= $(".addresstree");
 	for(var i=0;i<addresstree.length;i++){
@@ -287,12 +292,12 @@ function addanalyseitem(){
 				 btn_select_address.data("addressid",addressid);
 				 btn_select_address.data("addressname",addressname);
 				 queryaddresstarget(addressid,seq1);
-				 //if(!isfirstselect){
-					//	$("#btn_dropdown_toggle"+i).dropdown("toggle"); 
-					//}else{
-					//	isfirstselect=false;
-					//}
-				 $("#btn_dropdown_toggle"+i).dropdown("toggle");
+				  if(!isfirstselect){
+					 	$("#btn_dropdown_toggle"+i).dropdown("toggle"); 
+					 }else{
+				 	isfirstselect=false;
+					 }
+				// $("#btn_dropdown_toggle"+i).dropdown("toggle");
 				 $("#btn_dropdown_toggle"+i).blur();
 			} });
 			addresstreeitem.data("init",true);
@@ -318,6 +323,7 @@ function addanalyseitem(){
 	 $("#"+objid).removeClass("cus_btn").addClass("cus_btn_select");
 	 cleartimeset();
 	 restanalysedata();
+	 adddatetotimeset(new Date());
  }
  function cleartimeset(){
 	 $(".timediv").remove();
@@ -398,7 +404,7 @@ function addanalyseitem(){
 	 }
 	 var html='<div style="height:44px;display:flex;align-items:center"><div class="timediv" data-val="'+valuedate+'">'+
 	 displaydate+'</div>'+
-	    '<div class="removebtn removetimebutton"  ></div></div>';
+	    '<div class="removebtn removetimebutton" style="width:46px;background-position-x:10px"  ></div></div>';
 		 $(".addtimebutton").before(html);
 		 $(".removetimebutton").unbind("click").bind("click",function(event){
 			 var removeitem=$(event.target).parent();
@@ -406,6 +412,8 @@ function addanalyseitem(){
 			 $(event.target).remove();
 			 restanalysedata();
 		 }); 
+		 $(".removetimebutton").show();
+		 $(".removetimebutton:last").hide();
  }
  function restanalysedata(){
 	 $("#content").empty();
@@ -430,17 +438,17 @@ function addanalyseitem(){
  </div>
  </div>
  <div class="modify-divider"></div>
-<div     style="padding: 10px 20px;  display: -ms-flexbox;    display: flex; flex-direction:column;   background-color: #fff;    margin-top: 10px; ">
- <div id="targetselectdiv"  style="display:flex; flex-direction:row;   flex-wrap: wrap;align-items:center" >
- <div style="width:70px;text-align:left"  id="lb_analyseitem">分析项</div>
- 
- 
-  <div  id="lb_analysetimetype" style="display:flex; flex-direction:row;    align-items:center;height:44px">
+<div     style="padding: 10px 20px;  display: -ms-flexbox;    display: flex; flex-direction:column;   background-color: #fff;    ">
+ <div id="targetselectdiv"  style="display:flex; flex-direction:row;   flex-wrap: nowrap;align-items:flex-start" >
+ <div style="width:80px;text-align:left;margin-top:17px;"  id="lb_analyseitem">分析项：</div>
+<div style="display:flex; flex-direction:row;  flex-wrap: wrap;  align-items:center;width:100%">
+  <div  id="lb_analysetimetype" style="display:flex; flex-direction:row;    align-items:center;height:34px">
+ </div>
  </div>
  </div>
  <div style="height:10px"></div>
  <div   style="display:flex; flex-direction:row;   flex-wrap: wrap;align-items:center" >
-  <div style="width:70px;text-align:right" >分析周期：</div>
+  <div style="width:80px;text-align:left" >分析周期：</div>
   <div id="timetype_btn_day" onclick="changetype(event);" class="cus_btn_select" style="cursor:pointer;">
 日
 </div>
@@ -458,20 +466,21 @@ function addanalyseitem(){
 </div>
 </div>
   <div style="height:10px"></div>
-  <div   style="display:flex; flex-direction:row;   flex-wrap: wrap;align-items:center" >
-   <div style="width:70px;text-align:right">时间选择：</div>
-   <div class="addbtn addtimebutton"  onclick="addtimeset();" ></div> 
- 
- 
- <div style="width:10px"  ></div>
-<button onclick="analysedata();" class="yl-btn pointer blue"  >开始分析</button>
-
-
+  <div   style="display:flex; flex-direction:row;   flex-wrap: nowrap;align-items:flex-start" >
+   <div style="width:80px;text-align:left;margin-top:7px;">时间选择：</div>
+   <div style="display:flex; flex-direction:row;  flex-wrap: wrap;  align-items:center;width:100%">
+   <div class="addbtn addtimebutton" style="padding-left:10px;width:36px;background-position-x:10px" onclick="addtimeset();" ></div> 
+  </div>
   </div>
    <div style="height:10px"></div>
+   <button onclick="analysedata();" class="yl-btn pointer blue"  >开始分析</button>
+     <div style="height:15px"></div>
+         <div class="modify-divider" style="  margin: 0px 0px;"></div>
+            <div style="height:15px"></div>
      <div style="display:flex;justify-content:flex-end;width:100%" id="titlecontent">
   </div>
    <div style="height:10px"></div>
+
   <div style="display:flex;width:100%;flex-wrap:wrap; flex-direction: row" id="content">
   请选择分析项和时间，然后开始分析
   </div>

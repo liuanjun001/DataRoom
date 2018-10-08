@@ -78,12 +78,12 @@ function selectaddress(node){
 	addressid=node.id;
 	addressname=node.text;
 	QueryAddressTargetInfo();
-	// if(!isfirstselect){
-	//	 $(".dropdown-toggle").dropdown("toggle"); 
-	//	}else{
-	//		isfirstselect=false;
-	//	}
-	 $(".dropdown-toggle").dropdown("toggle"); 
+	 if(!isfirstselect){
+		 $(".dropdown-toggle").dropdown("toggle"); 
+		}else{
+			isfirstselect=false;
+		}
+	// $(".dropdown-toggle").dropdown("toggle"); 
 	 $(".dropdown-toggle").blur();
 }
 
@@ -415,7 +415,7 @@ function showQueryAddressTargetInfoResult(data,callobj){
 	 var html='<div class="chartitempaneldiv" style="margin-left: 0px;margin-top:'+(ipos>0?'30':'0')+'px;width: 100%;max-width:100%">'+
 		 '<div  class="chartitem-title" style="justify-content:space-between" ><span>'+
 		 targetname+
-	 '</span><div   class="yl-button-group" style="width: 140px;justify-content:space-between"><div id="'+targetid+'_btn_day" onclick="changetype(event);" class="cus_btn_select" style="cursor:pointer;">'+
+	 '</span><div   class="yl-button-group" style="width: 180px;justify-content:space-between"><div id="'+targetid+'_btn_day" onclick="changetype(event);" class="cus_btn_select" style="cursor:pointer;">'+
 	 '日'+
 	 '</div>'+
 	 '<div id="'+targetid+'_btn_month" onclick="changetype(event);" class="cus_btn" style="cursor:pointer;">'+
