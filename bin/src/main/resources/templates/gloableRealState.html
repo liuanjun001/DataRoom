@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta charset="utf-8" />
+<!--<meta http-equiv="X-UA-Compatible" content="IE=11">-->
+<title th:text="#{system.systemname}">实时数据</title>
+<link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/css/ybmps.css}" />
+<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+<link rel="stylesheet" th:href="@{/css/_all-skins.css}" />
+<link rel="stylesheet" th:href="@{/css/daterangepicker.css}" />
+<link rel="stylesheet" th:href="@{/css/dhcss.css}" />
+<style>
+body {
+	overflow: auto;
+	height: 100%;
+	margin: 1px
+}
+.normal_color{
+background-color: rgb(179, 226, 255);
+}
+.warn_color{
+background-color: rgb(244, 155, 39);
+ color: rgb(255, 255, 255);
+}
+.offline_color{
+background-color: rgb(223, 223, 231);
+color: rgb(86, 91, 120);
+}
+.title_rec{
+border-style: solid;  border-width: 1px;  border-color: rgb(134, 189, 230);  border-radius: 2px;     position: absolute;    width: 18px;  height: 15px;
+}
+.data_rec{
+   text-align: center;font-size: 12px;cursor:pointer;
+  font-family: "Hiragino Sans GB";padding-top:5px;  vertical-align:middle;line-height: 1.167;border-style: solid;  border-width: 1px;  border-color: rgb(134, 189, 230);  border-radius: 2px;     position: absolute;    width: 68px;  height: 38px;
+}
+</style>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+
+
+<script th:src="@{/JQueryUi/jquery-ui.min.js}"></script>
+<script th:src="@{/easyui/jquery.easyui.min.js}"></script>
+
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+
+<script type="text/javascript" th:src="@{/js/RobotJs.js}"></script>
+
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+$().ready(function(){
+//	robotservice.robotuserid=/*[[${session.userid}]]*/null;
+//	robotservice.robotdisplayname=/*[[${session.displayname}]]*/null;
+//	robotservice.robotusername=/*[[${session.username}]]*/null;
+//	robotservice.loginPage=/*[[#{LoginPage}]]*/./login.html;
+//	robotservice.baseurl= /*[[@{/}]]*/ '';
+//	  	if(	robotservice.robotuserid==null){
+ //   		window.location.href="/";
+ //   	}
+	  	showdata([{"title":"环城路-配电柜1",lampdata:[{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":true,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D08",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D31",id:"10001","offline":false,"warn":""},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"}
+	  				],linedata:[{name:"l1",id:"10001","offline":false,"warn":"电流异常"},{name:"l2",id:"10001","offline":false,"warn":"电流异常"},{name:"l3",id:"10001","offline":false,"warn":"电流异常"},{name:"l4",id:"10001","offline":false,"warn":"电流异常"},{name:"l5",id:"10001","offline":false,"warn":"电流异常"},{name:"l6",id:"10001","offline":false,"warn":"电流异常"}]},
+	  				{"title":"环城路-配电柜2",lampdata:[{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},
+	  			  		{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"},{name:"D01",id:"10001","offline":false,"warn":"电流异常"}
+	  			  				],linedata:[{name:"l1",id:"10001","offline":false,"warn":"电流异常"},{name:"l2",id:"10001","offline":false,"warn":"电流异常"},{name:"l3",id:"10001","offline":false,"warn":"电流异常"},{name:"l4",id:"10001","offline":false,"warn":"电流异常"},{name:"l5",id:"10001","offline":false,"warn":"电流异常"},{name:"l6",id:"10001","offline":false,"warn":"电流异常"}]}
+	  			  						]);
+});
+var tmptop=0;
+function showdata(data){
+	var cotent=$("#content");
+	cotent.empty();
+	tmptop=0;
+	cotent.width($("#dh_headpanel").width());
+	var html="";
+	for (var i=0;i<data.length;i++){
+		var item=data[i];
+		html+=showitem(item);
+	}
+	cotent.append(html);
+}
+function showitem(item){
+	var cotent=$("#content");
+	var lineheight=42;
+	var recwidth=70;
+	var colsize=parseInt(cotent.width()/recwidth);
+	var linesize= Math.ceil(item.lampdata.length/colsize);
+//	alert(colsize+","+linesize);
+	var beginhtml="<div style='position: absolute;left: 0px; right:0px;top:"+tmptop+"px'>";
+	var headhtml="<div class='dh_panel' style='left: 0px;  top: 5px;  right:0px;height:45px'><div style='position: absolute;left: 15px;  top:10px;'>"+item.title+"</div></div>";
+	var lampitemhtml="";
+	var icount=0;
+	var rectop=0;
+	var recleft=20-recwidth;
+	for (var i=0;i<item.lampdata.length;i++){
+		if(icount<colsize){
+			icount++;
+			recleft+=recwidth;
+		}else{
+			recleft=20;
+			rectop+=lineheight;
+			icount=1;
+		}
+		var lampdata=item.lampdata[i];
+		var colorclass="normal_color";
+		var displaycontent="";
+		if(lampdata.offline){
+			colorclass="offline_color";
+			displaycontent=lampdata.name+"<br/>设备离线";
+		}else if(lampdata.warn!=null&&lampdata.warn.length>0){
+			colorclass="warn_color";
+			displaycontent=lampdata.name+"<br/>"+lampdata.warn;
+		} 
+		lampitemhtml+="<div ondblclick='showDetail(\""+lampdata.name+"\",\""+lampdata.id+"\",);' data-lampname='"+lampdata.name+"' data-lampid='"+lampdata.id+"' class='data_rec "+colorclass+"' style='left: "+recleft+"px;  top: "+rectop+"px;'>"+displaycontent+"</div>";
+		
+	}
+	var contenthtml="<div class='dh_panel' style='left: 0px;  top: 52px;  right:0px;height:"+(linesize*lineheight+18)+"px'><div style='position: absolute;left: 5px;  top:10px;'>"+lampitemhtml+"</div></div>";
+	var endhtml="</div>";
+	tmptop+=linesize*lineheight+50+18;
+	var html=beginhtml+headhtml+contenthtml+endhtml;
+	return html;
+	
+}
+
+function showDetail(lampname,lampid){
+ 
+		RobotComm.showPopUpWindow("realstate/data.html","【"+lampname+"】数据",{width:800,height:600,"lampname":lampname,"lampid":lampid},function (){
+			 
+		});
+	 
+}
+
+/*]]>*/
+</script>
+</head>
+<body style="background-color:#ecf0f5;">
+	<img id="progressImgage" class="ajaxprogress" style="display: none"
+		alt=""  th:src="@{/images/ajax-loader.gif}" />
+	<div id="maskOfProgressImage" class="ajaxmask" style="display: none"></div>
+	<div id="dh_headpanel" class="dh_panel" style="left: 5px;  top: 5px;  right:5px;  height: 45px;">
+	<div style="position: absolute;left:5px;top:10px">项目</div>
+	<select id="project" style="position: absolute;left:35px;top:10px;width:200px"></select>
+	<div style="right: 300px;  top: 10px; " class="title_rec normal_color"></div>
+	<div style="position: absolute;right: 240px;  top: 10px; ">正常路灯</div>
+	<div style="right: 220px;  top: 10px; " class="title_rec warn_color"></div>
+	<div style="position: absolute;right: 160px;  top: 10px; ">告警路灯</div>
+	<div style="right: 140px;  top: 10px; " class="title_rec offline_color"></div>
+	<div style="position: absolute;right: 80px;  top: 10px; ">离线路灯</div>
+	</div>
+	<div id="content" class="container"    style="position: absolute;left:5px;top:50px;right:5px;bottom:5px;margin:0px;padding:0px;"></div>
+</body>
+</html>

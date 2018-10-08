@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+    <head xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title th:text="#{system.systemname}"></title>
+          <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+    <!-- Bootstrap 3.3.5 -->
+     <link rel="stylesheet" href="../easyui/themes/bootstrap/easyui.css" />
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../css/bootstrap-table.min.css" />
+	<link rel="stylesheet" href="../css/bootstrap-treeview.min.css" />
+	 <link rel="stylesheet" href="../css/jquery.dataTables.min.css" />
+	 	<link rel="stylesheet" href="../JQueryUi/jquery-ui.min.css" />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../css/ybmps.css" />
+	<link rel="stylesheet" href="../fonts/css/font-awesome.min.css" />
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="../css/_all-skins.css" />
+	
+	<script src="../jQuery/jQuery-2.1.4.min.js"></script>
+<script src="../js/bootstrap-treeview.min.js"></script>
+	<script src="../easyui/jquery.easyui.min.js"></script>	
+		
+	<script src="../js/app.js"></script>
+	<script src="../js/RobotComm.js"></script>
+	<script src="../js/robotservice.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/jquery.dataTables.js"></script>
+    <script src="../js/echarts-all.js" type="text/javascript"></script>
+    </head>
+   <script th:inline="javascript">
+   /*<![CDATA[*/
+    	function init(){
+    		 $("#treediv").tree({
+    	          checkbox:false,
+    	          lines:true,
+    	          onClick:function(node){
+    	   
+    	      	  	if(node.servicename!=null){
+    	      	       FQueryDetail(node.servicename,node.functionname);
+    	      		  	}
+    	          }
+    	       
+    	        });
+    		getServiceTree();
+    	}
+    	function getServiceTree(){
+    		robotservice.callrobotservice("SystemStatisticsService","getServiceFunctionTree",{},refreshtree);
+    	}
+    	function refreshtree(data){
+ /*   			$('#treediv').treeview({data:data,
+	  onNodeSelected: function(event, data) {
+	  	if(data.servicename!=null){
+       FQueryDetail(data.servicename,data.functionname);
+	  	}
+  }});*/
+    			 $("#treediv").tree({"data":data});	
+    	}
+    	/**
+    	 * 查询详情
+    	 * @param {Object} servicename
+    	 * @param {Object} functionname
+    	 */
+    	function FQueryDetail(servicename,functionname){
+    	robotservice.callrobotservice("SystemStatisticsService","QueryServiceFunctionDetail",{"clsname":servicename,"callname":functionname},refreshDetail);
+    	}
+    	function refreshDetail(data){
+    		var desc="";
+    		if(data.classremark!=null&&data.classremark!=undefined){
+    			desc+=data.classremark.replace(/\r\n/g,"<br/>")+"<br/>";
+    		}
+    		desc+="类路径:"+data.classname+"<br/>----------------------------------------------<br/>";
+    		if(data.functionremark!=null&&data.functionremark!=undefined){
+    			desc+=data.functionremark.replace(/\r\n/g,"<br/>")+"<br/>";
+    		}
+    		desc+="函数声明:"+data.functiondesc;
+    		if(data.fieldremark!=null&&data.fieldremark!=undefined){
+    			desc+="<br/>参数定义:<br/>"+data.fieldremark.replace(/\r\n/g,"<br/>")+"<br/>";
+    		}
+    		//$("#l_desc").html("类名:"+data.classname+" 函数:"+data.functiondesc);
+    		$("#l_desc").html(desc);
+    		
+    		var countinfo=JSON.parse(data.countinfo);
+    	 
+    	  var mycountChart = echarts.init(document.getElementById('countchart'));
+  var placeHoledStyle = {
+    normal:{
+        barBorderColor:'rgba(0,0,0,0)',
+        color:'rgba(0,0,0,0)'
+    },
+    emphasis:{
+        barBorderColor:'rgba(0,0,0,0)',
+        color:'rgba(0,0,0,0)'
+    }
+};
+var dataStyle = { 
+    normal: {
+        label : {
+            show: true,
+            textStyle:{
+            color:'rgba(0,0,0,1)'
+            },
+            position: 'insideLeft',
+             formatter : function(p){
+        var ret="";
+         
+        	if(p.name=="访问量"){
+        	ret+= parseInt(p.value*100)+"次 ";
+        	}else{
+        		ret+=parseInt(p.value*300)+"ms ";
+        	}
+        	 
+        	return ret;
+        }
+        }
+    }
+};
+countoption = {
+    title: {
+        text: '统计信息',
+        subtext :'参照值：耗时30秒，访问量10000次'
+    },
+    tooltip : {
+        trigger: 'axis',
+        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        },
+        formatter : function(p){
+        	var ret=p[0].name+"<br/>";
+        	for(var i=0;i<p.length;i++){
+        	if(p[i].name=="访问量"){
+        	ret+=p[i].seriesName+":"+(p[i].value*100)+"次<br/>";
+        	}else{
+        		ret+=p[i].seriesName+":"+(parseInt(p[i].value*300))+"ms<br/>";
+        	}
+        		i++;
+        	}  
+        	return ret;
+        }
+    },
+    legend: {
+        y: 40,
+        itemGap : document.getElementById('countchart').offsetWidth / 8,
+        data:['今日', '本周','本月','开通以来']
+    },
+  
+  
+    xAxis : [
+        {
+            type : 'value',
+            position: 'top',
+            splitLine: {show: false},
+            axisLabel: {show: false}
+        }
+    ],
+    yAxis : [
+        {
+            type : 'category',
+            splitLine: {show: false},
+            data : ['访问量', '最少耗时', '平均耗时', '最大耗时']
+        }
+    ],
+    series : [
+        {
+            name:'今日',
+            type:'bar',
+            stack:'总量',
+            itemStyle:dataStyle,
+            data:[(countinfo.todaycount/100),(countinfo.todaymintime/300),countinfo.todayavgtime/300,countinfo.todaymaxtime/300]
+        },
+        {
+            name:'今日',
+            type:'bar',
+            stack: '总量',
+            itemStyle: placeHoledStyle,
+            data:[100-countinfo.todaycount/100, 100-countinfo.todaymintime/300, 100-countinfo.todayavgtime/300, 100-countinfo.todaymaxtime/300]
+        },
+        {
+            name:'本周',
+            type:'bar',
+            stack: '总量',
+            itemStyle : dataStyle,
+          data:[countinfo.weekcount/100,countinfo.weekmintime/300,countinfo.weekavgtime/300,countinfo.weekmaxtime/300]
+        },
+        {
+            name:'本周',
+            type:'bar',
+            stack: '总量',
+            itemStyle: placeHoledStyle,
+            data:[100-countinfo.weekcount/100, 100-countinfo.weekmintime/300, 100-countinfo.weekavgtime/300, 100-countinfo.weekmaxtime/300]
+            
+        },
+        {
+            name:'本月',
+            type:'bar',
+            stack: '总量',
+            itemStyle : dataStyle,
+          data:[countinfo.monthcount/100,countinfo.monthmintime/300,countinfo.monthavgtime/300,countinfo.monthmaxtime/300]
+
+        },
+        {
+            name:'本月',
+            type:'bar',
+            stack: '总量',
+            itemStyle: placeHoledStyle,
+             data:[100-countinfo.monthcount/100, 100-countinfo.monthmintime/300, 100-countinfo.monthavgtime/300, 100-countinfo.monthmaxtime/300]
+
+        },
+        {
+            name:'开通以来',
+            type:'bar',
+            stack: '总量',
+            itemStyle : dataStyle,
+          data:[countinfo.count/100>100?100:countinfo.count/100,countinfo.mintime/300,countinfo.avgtime/300,countinfo.maxtime/300]
+
+        },
+        {
+            name:'开通以来',
+            type:'bar',
+            stack: '总量',
+            itemStyle: placeHoledStyle,
+            data:[countinfo.count/100>100?100:100-countinfo.count/100, 100-countinfo.mintime/300, 100-countinfo.avgtime/300, 100-countinfo.maxtime/300]
+
+        }
+    ]
+};
+                    
+    	      mycountChart.setOption(countoption); 
+    	      
+    		   var dt=new Date();
+    		   
+    		   var myChart = echarts.init(document.getElementById('nearcountchart'));
+        
+        var option = {
+          title : {
+        text: '函数调用耗时近10日趋势图'
+       
+    },
+               tooltip: {
+                show: true,
+                trigger: 'axis'
+            },
+            legend: {
+                data:['最小值','最大值','平均值','次数']
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    data : [(new Date(dt.getTime()-10*86400000)).format("MM/dd"),(new Date(dt.getTime()-9*86400000)).format("MM/dd"),(new Date(dt.getTime()-8*86400000)).format("MM/dd"),(new Date(dt.getTime()-7*86400000)).format("MM/dd"),(new Date(dt.getTime()-6*86400000)).format("MM/dd"),(new Date(dt.getTime()-5*86400000)).format("MM/dd"),(new Date(dt.getTime()-4*86400000)).format("MM/dd"),(new Date(dt.getTime()-3*86400000)).format("MM/dd"),(new Date(dt.getTime()-2*86400000)).format("MM/dd"),(new Date(dt.getTime()-1*86400000)).format("MM/dd")]
+                } 
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    axisLabel:{formatter:'{value} ms'}
+                },
+                {
+                    type : 'value',
+                    axisLabel:{formatter:'{value} 次'}
+                }
+            ],
+            series : [
+                {
+                    "name":"最小值",
+                    "type":"bar",
+                  
+                             
+             itemStyle: {normal: {color:'rgba(0,255,0,0.5)' }},
+ 
+                    "data":[countinfo.nearmintime[9], countinfo.nearmintime[8], countinfo.nearmintime[7], countinfo.nearmintime[6], countinfo.nearmintime[5], countinfo.nearmintime[4],countinfo.nearmintime[3],countinfo.nearmintime[2],countinfo.nearmintime[1],countinfo.nearmintime[0]]
+                },
+                 {
+                    "name":"最大值",
+                    "type":"bar",
+                   
+                         
+             itemStyle: {normal: {color:'rgba(255,35,43,0.5)' }},
+ 
+                    "data":[countinfo.nearmaxtime[9], countinfo.nearmaxtime[8], countinfo.nearmaxtime[7], countinfo.nearmaxtime[6], countinfo.nearmaxtime[5], countinfo.nearmaxtime[4],countinfo.nearmaxtime[3],countinfo.nearmaxtime[2],countinfo.nearmaxtime[1],countinfo.nearmaxtime[0]]
+                },
+                 {
+                    "name":"平均值",
+                    "type":"bar",
+                
+             itemStyle: {normal: {color:'rgba(0,35,255,0.5)' }},
+ 
+                    "data":[countinfo.nearavgtime[9], countinfo.nearavgtime[8], countinfo.nearavgtime[7], countinfo.nearavgtime[6], countinfo.nearavgtime[5], countinfo.nearavgtime[4],countinfo.nearavgtime[3],countinfo.nearavgtime[2],countinfo.nearavgtime[1],countinfo.nearavgtime[0]]
+                }
+                 ,
+                 {
+                    "name":"次数",
+                    "type":"line",
+                     
+   "yAxisIndex": 1,
+             itemStyle: {normal: {color:'rgba(0,35,255,0.5)' }},
+ 
+                    "data":[countinfo.nearcount[9], countinfo.nearcount[8], countinfo.nearcount[7], countinfo.nearcount[6], countinfo.nearcount[5], countinfo.nearcount[4],countinfo.nearcount[3],countinfo.nearcount[2],countinfo.nearcount[1],countinfo.nearcount[0]]
+                }
+            ]
+        };
+
+        // 为echarts对象加载数据 
+        myChart.setOption(option); 
+
+    	}
+    	 /*]]>*/
+    </script>
+    
+    <body class="hold-transition skin-blue sidebar-mini"  onload="init()" >
+    	<img id="progressImgage" class="ajaxprogress" style="display:none" alt="" src="../images/ajax-loader.gif"/> 
+<div id="maskOfProgressImage" class="ajaxmask" style="display:none"></div> 
+<div class="row">
+<div class="col-md-3 col-xs-3 span3" style="overflow:auto;top:0px;bottom:0px">
+<ul class="tree well" id="treediv">
+   
+</ul>
+		</div>
+			<div class="col-md-9 col-xs-9 span9">
+				<div class="row">
+				
+					<div class="col-md-12 col-xs-12 span12"><label  id="l_desc"></label></div>
+				 
+				</div>
+				<div class="row">
+				
+					<div class="col-md-12 col-xs-12 span12" id="countchart" style="height: 300px;"> </div>
+				 
+				</div>
+				<div class="row">
+				
+					<div class="col-md-12 col-xs-12 span12" id="nearcountchart" style="height: 300px;"> </div>
+				 
+				</div>
+
+			</div>
+	</div>
+ 	</body>
+</html>

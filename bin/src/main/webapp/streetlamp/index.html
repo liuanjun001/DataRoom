@@ -1,0 +1,139 @@
+<!DOCTYPE html >
+<html lang="en" style="font-family:Verdana;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+  <title>Data Truning</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body style="margin: 0px;font-size: 12px;">
+
+
+<div id="root"></div>
+<link href="http://api.map.baidu.com/library/TrafficControl/1.2/src/TrafficControl_min.css" rel="stylesheet" type="text/css" />
+<!--<script src='echarts-3.7.0.js'></script>
+<script src='echarts-liquidfill.js'></script>-->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=1rRpeP76shXAGFqSdPeqcaVvAImaDrAn"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/TrafficControl/1.2/src/TrafficControl_min.js"></script>
+
+<script src="index.js"></script>
+
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<!--<script src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js?_v_=1504168215640"></script>
+<script src="http://echarts.baidu.com/resource/echarts-liquidfill-1.0.4/dist/echarts-liquidfill.js"></script>-->
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
+
+<link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+<script src="https://unpkg.com/video.js/dist/video.js"></script>
+
+<script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+
+
+<style>
+  a{ font-size:13px; color:#333333; text-decoration:none;}
+  a:hover{color:red; text-decoration:underline;}
+  img{ border:none;}
+
+  #marquee {width:100%;height:72%;overflow:hidden; margin-top:270px;font-size: 13px;}
+  #marquee li{ display:inline; float:left; margin-right:12px;}
+  #marquee li a{ width:230px; height:260px; display:block; float:left; text-align:center; font-size:14px;}
+  #marquee li a:hove{ text-decoration:none;}
+  #marquee li img {width:100%; height:160px;}
+  #marquee li em{font-style: normal; height:24px; line-height:24px; display:block; margin-top:8px;}
+
+  #wydp {width:100%;height:300px;overflow:hidden;font-size: 16px;margin-left: 40px;}
+  #wydp li{ display:inline; float:left; margin-right:12px;width: 390px;margin-top: 12px;}
+  #wydp li a{ width:230px; height:260px; display:block; float:left; text-align:center; font-size:14px;}
+  #wydp li a:hove{ text-decoration:none;}
+  #wydp li img {width:100%; height:160px;}
+  #wydp li em{font-style: normal; height:24px; line-height:24px; display:block; margin-top:8px;}
+
+  #wyjf {width:100%;height:100px;overflow:hidden;font-size: 16px;margin-left: 40px;}
+  #wyjf li{ display:inline; float:left; margin-right:12px;margin-top: 12px;}
+  #wyjf li a{ width:230px; height:260px; display:block; float:left; text-align:center; font-size:14px;}
+  #wyjf li a:hove{ text-decoration:none;}
+  #wyjf li img {width:100%; height:160px;}
+  #wyjf li em{font-style: normal; height:24px; line-height:24px; display:block; margin-top:8px;}
+
+
+  #jfgj {width:100%;height:270px;overflow:hidden;font-size: 16px;}
+  #jfgj li{ display:inline; float:left; margin-right:12px; width: 400px}
+  #jfgj li a{ width:230px; height:260px; display:block; float:left; text-align:center; font-size:14px;}
+  #jfgj li a:hove{ text-decoration:none;}
+  #jfgj li img {width:100%; height:160px;}
+  #jfgj li em{font-style: normal; height:24px; line-height:24px; display:block; margin-top:8px;}
+
+
+  #internet {width:100%;height:95%;overflow:hidden; font-size: 13px;}
+  #internetli{ display:inline; float:left; margin-right:12px;}
+  #internet li a{ width:230px; height:260px; display:block; float:left; text-align:center; font-size:14px;}
+  #internet li a:hove{ text-decoration:none;}
+  #internet li img {width:100%; height:160px;}
+  #internet li em{font-style: normal; height:24px; line-height:24px; display:block; margin-top:8px;}
+
+  #cysex {width:100%;height:95%;overflow:hidden; font-size: 13px;}
+  #cysexli{ display:inline; float:left; margin-right:12px;}
+  #cysexli a{ width:230px; height:260px; display:block; float:left; text-align:center; font-size:14px;}
+  #cysex li a:hove{ text-decoration:none;}
+  #cysex li img {width:100%; height:160px;}
+  #cysex li em{font-style: normal; height:24px; line-height:24px; display:block; margin-top:8px;}
+
+  #my_video_1_html5_api{
+    width: 480px;
+    height: 260px;
+    margin-top: 40px;
+  }
+
+
+
+  @-webkit-keyframes rowup {
+    0% {
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      -webkit-transform: translate3d(0, -240px, 0);
+      transform: translate3d(0, -240px, 0);
+    }
+  }
+  #list{
+    width: 90%;
+    margin: 10px auto;
+    position: relative;
+    height: 240px;
+    overflow: hidden;
+    font-size: 15px;
+    font-family: 'Microsoft Yahei';
+
+
+  }
+
+  #rowup{
+    -webkit-animation: 10s rowup linear infinite normal;
+    animation: 10s rowup linear infinite normal;
+    position: relative;
+  }
+
+</style>
+
+<script>
+
+  /*var scale = 1 / devicePixelRatio;
+  document.querySelector('meta[name="viewport"]').setAttribute('content','initial-scale=' + scale + ', maximum-scale=' + scale + ', minimum-scale=' + scale + ', user-scalable=no');
+  document.documentElement.style.fontSize = document.documentElement.clientWidth / 10 + 'px';*/
+
+</script>
+
+
+<!--<video id="my_video_1" class="video-js vjs-default-skin"  autoPlay width="340" height="268"
+       data-setup='{}'>
+  <source src="http://hls.open.ys7.com/openlive/40d13c7afa484150964a3d906ffd969c.m3u8" type="application/x-mpegURL"/>
+</video>-->
+
+</body>
+</html>
+
+
+

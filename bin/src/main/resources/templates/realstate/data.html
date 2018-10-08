@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <head>
+ <!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"	name="viewport" />
+<title th:text="#{system.systemname}"></title>
+<link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/css/ybmps.css}" />
+<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+<link rel="stylesheet"  th:href="@{/css/realstatefrmtab.css}" />
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+
+<link rel="stylesheet" th:href="@{/css/_all-skins.css}" />
+<link rel="stylesheet" th:href="@{/css/daterangepicker.css}" />
+<style>
+ body { font-family: 'Hiragino Sans GB'; }
+ .baseinfo_label{font-size: 17px;  font-family: 'Hiragino Sans GB';  color: rgb(121, 125, 150);  line-height: 2;  text-align: left;  position: absolute; }
+ .baseinfo_value{font-size: 18px;  font-family: 'Hiragino Sans GB';  color: rgb(86, 91, 120);  line-height: 2;  text-align: left;  position: absolute; }
+ .baseinfo_title{font-size: 20px;  font-family: 'Hiragino Sans GB';  color: rgb(121, 125, 150);  line-height: 2;  text-align: left;  position: absolute; }
+ .line_横线 { background-color: rgb(245, 244, 250);  position: absolute; left: 0px;right:0px; height: 1px;}
+ .line_竖线 { background-color: rgb(245, 244, 250);position: absolute;  width: 1px; top:0px; bottom:0px;}
+ .rect_channel{ border-style: solid;  border-width: 1px;  border-color: rgb(187, 189, 202);  border-radius: 2px;  background-color: rgb(223, 223, 231);  position: absolute;  width: 18px;  height: 15px;}
+ .rect_channel.active { background-color: rgb(227, 250, 168);}
+ .rect_channel.error { background-color: rgb(255, 0, 0);}
+ .targetvalue_rect{
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(187, 189, 202);
+  border-radius: 4.5px;
+  background-color: rgb(255, 255, 255);
+  position: absolute;
+  width: 101px;
+  height: 66px;
+  text-align: center;
+ }
+ .targetvalue_value{
+   top:5px;
+   position: absolute;
+   font-size: 19px;
+  font-family: "Hiragino Sans GB";
+  color: rgb(86, 91, 120);  line-height: 1.267;
+  text-align: center;
+  width:100%;
+ }
+  .targetvalue_name{
+   position: absolute;
+   font-size: 14px;
+  font-family: "Hiragino Sans GB";
+  color: rgb(86, 91, 120);  line-height: 1.267;
+  text-align: center;
+  bottom:5px;width:100%;
+ }
+ .矩形_7{
+   background-color: rgb(238, 237, 242);
+  position: absolute;
+  width:30px;
+ }
+ .calendar{
+    font-family: "-apple-system", "Helvetica Neue", "Roboto", "Segoe UI", sans-serif;
+    width: 490px;
+    text-align: center;
+    overflow: hidden;
+}
+#calendar_weekday{
+    width: 500px;
+}
+#calendar_weektitle{
+    width: 500px;
+}
+.prev{
+    cursor: pointer;
+    float: left;
+    /*            padding-right: px;*/
+}
+.next{
+    cursor: pointer;
+    float: right;
+    /*            padding-right: px;*/
+}
+
+#calendar_weekday div,#calendar_weektitle div{
+    border-bottom: 1px solid #cccccc;
+    font-size: 11px;
+    font-family: "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#calendar_weekday div{
+    color: #adadad;
+}
+#calendar_weekday > div:hover{
+    background-color: #ffcd3c;
+    opacity: .5;
+}
+/**#regis,#instalment{
+    line-height: 35px;
+    font-family: "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    width: 490px;
+    padding-left: 20px;
+}
+#regis{
+    background-color: #ffd96a;
+    height: 40px;
+}
+#instalment{
+    border-bottom: 1px solid red;
+    height: 36px;
+}***/
+ </style>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/JQueryUi/jquery-ui.min.js}"></script>
+<script th:src="@{/easyui/jquery.easyui.min.js}"></script>	
+<script th:src="@{/js/moment.js}"></script>
+<script  th:src="@{/js/daterangepicker.js}"></script>
+<script  th:src="@{/js/bootstrap.min.js}"></script>
+<script  th:src="@{/js/robotservice.js}" type="text/javascript"></script>
+<script type="text/javascript"  th:src="@{/js/jquery.dataTables.js}"></script>
+<script type="text/javascript"  th:src="@{/js/RobotComm.js}"></script>
+<script type="text/javascript"  th:src="@{/js/compent/RobotPageBar.js}"></script>
+<script type="text/javascript"  th:src="@{/js/compent/RobotSingnalInfoPanel.js}"></script>
+<script type="text/javascript"  th:src="@{/js/compent/RobotAreaStationTree.js}"></script>
+<script type="text/javascript"  th:src="@{/js/compent/RobotHistorySingnalPanel.js}"></script>
+<script type="text/javascript"  th:src="@{/js/compent/RobotSignalControl.js}"></script>
+<script  th:src="@{/js/echarts.min.js}" type="text/javascript"></script>
+<script  th:src="@{/js/theme/shine.js}" type="text/javascript"></script>
+<script th:inline="javascript" type="text/javascript">
+	/*<![CDATA[*/
+function refreshstation(stationid,stationname,areaid,areaname){
+ 
+	$("#var_node_name").html(stationname);
+	QueryLampBaseInfo(stationid);
+	QueryLampRealInfo(stationid);
+	GetWeather(stationid);
+}
+function refresharea(areaid,areaname){
+
+ 
+}
+
+/**
+ * Created by heart on 2017/4/26.
+ */
+window.onload = function(){
+    //为日历写入月份头部
+    function Calendar(){
+        var weeks = ['日', '一', '二', '三', '四', '五', '六'];
+        for(i = 0; i < weeks.length; i++){
+            var div = document.createElement('div');
+            div.id = 'week_' + i;
+            div.innerHTML = weeks[i];
+            div.style.width = '14%';
+            div.style.height = '35px';
+            div.style.lineHeight = div.style.height;
+            div.style.backgroundColor = '#ccc';
+            div.style.float = 'left';
+            div.style.textAlign = 'center';
+            document.getElementById('calendar_weektitle').appendChild(div);
+        }
+    
+    }
+
+    //构造原型对象
+    Calendar.prototype = {
+        //取闰年函数
+        isLeap : function(year){
+            return (year % 100 !== 0 && year % 4 == 0) || (year % 400 == 0);
+        },
+        //返回本年本月的天数
+        getDaysNum : function(year, month) {
+            var num = 31;           //大月
+            switch (month) {
+                case '2':
+                    num = this.isLeap(year) ? 29 : 28;
+                    break;         //小月
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    num = 30;
+                    break;
+            }
+            return num;
+        },
+        //返回本月的第一天是周几
+        getWeek : function(year, month){
+            var d = new Date();
+            // var m=d.getMonth()+1;
+            // var y=d.getYear();
+
+            d.setYear(year);
+            d.setMonth(month-1);
+            d.setDate(1);
+            var weeks = ['7', '1', '2', '3', '4', '5', '6'];
+            return weeks[d.getDay()];
+
+        },
+        //核心函数，写入日历
+        show : function(year, month){
+            var weekFirstDay = this.getWeek(year, month);
+            var dayCount = this.getDaysNum(year, month);
+            console.log(weekFirstDay);
+            //得到本月头是周几，并在前面插入空天数
+            if(weekFirstDay != '7'){
+                for(var i = 0; i < weekFirstDay; i++){
+                    var div_1 = document.createElement('div');
+                    div_1.style.cursor = 'pointer';
+                    div_1.innerHTML = '';
+                    div_1.style.width = '14%';
+                    div_1.style.height = '40px';
+//                    div_1.style.lineHeight = div_1.style.height / 2;
+                    div_1.style.float = 'left';
+                    div_1.style.textAlign = 'center';
+                    document.getElementById('calendar_weekday').appendChild(div_1);
+                }
+            }
+            //得到本月的天数，按规则格式注入天数
+            for(i = 0; i < dayCount; i++){
+                var div_2 = document.createElement('div');
+                div_2.style.cursor = 'pointer';
+                div_2.id = 'day_' + year + '_' + month + '_' + (i + 1);
+                console.log(div_2.id);
+                div_2.innerHTML = i + 1 + '<br />';
+                div_2.style.width = '14%';
+                div_2.style.height = '40px';
+//                div_2.style.lineHeight = div_2.style.height / 2;
+                div_2.style.float = 'left';
+                div_2.style.textAlign = 'center';
+                document.getElementById('calendar_weekday').appendChild(div_2);
+            }
+
+        },
+        //跳转上个月，月份减一
+        PreMonth: function() {
+            this.PreDraw(new Date(this.Year, this.Month - 2, 1));
+        },
+        //跳转下个月，月份加一
+        NextMonth: function() {
+            this.PreDraw(new Date(this.Year, this.Month, 1));
+        },
+        //重绘
+        PreDraw: function(date) {
+            this.Year = date.getFullYear();
+            this.Month = date.getMonth() + 1;
+            this.Draw();
+        }
+    };
+   
+    //对象实例化
+    Calen = new Calendar();
+    //获取本地时间
+    var  data= new Date();
+    m = data.getMonth()+1;
+    y =data.getFullYear();
+    d = data.getDate();
+    //写入本月天数
+    Calen.show(y,m);
+    var today = document.getElementById('day_'+ y + '_'+ m + '_' + d);
+    today.style.backgroundColor = '#ffcd3c';
+
+    document.getElementById("year").innerHTML = y;
+    document.getElementById("month").innerHTML = m;
+   
+    //跳转到下个月
+    document.getElementById("next_M").onclick = function(){
+        var  div=document.getElementById("calendar_weekday");
+        div.innerHTML = "";
+        if(m > 0&&m < 12){
+            m += 1;
+        }else if(m > 1){
+            m = 1;
+            y += 1;
+        }else if(m == 12){
+            m = 1;
+            y += 1;
+        }
+        Calen.show(y, m);
+        document.getElementById("year").innerHTML = y;
+        document.getElementById("month").innerHTML = m;
+    };
+
+    //跳转到上一月
+    document.getElementById("prev_M").onclick = function(){
+        var div = document.getElementById("calendar_weekday");
+        div.innerHTML="";
+        if(m > 1 && m < 12){
+            m -= 1;
+        }else if(m <= 1){
+            m = 12;
+            y-=1;
+        }else if(m == 12){
+            m -= 1;
+        }
+        Calen.show(y, m);
+        document.getElementById("year").innerHTML = y;
+        document.getElementById("month").innerHTML = m;
+    };
+};
+function QueryLampBaseInfo(node_id){
+	robotservice.callrobotservice("SmartLightService","QueryLampDetailInfo",{"lampid":node_id},showQueryLampDetailInfo,this,false);			 
+}
+function showQueryLampDetailInfo(data,callobj){
+if(data!=null){
+for(prop in data){
+	$("#var_"+prop).html(data[prop]);
+}	
+}
+}
+function QueryLampRealInfo(node_id){
+	robotservice.callrobotservice("SmartLightService","QueryLampRealData",{"lampid":node_id},showQueryLampRealDataInfo,this,false);			 
+}
+function showQueryLampRealDataInfo(data,callobj){
+if(data!=null&&data.result!="nodata"){
+	for(prop in data){
+		if(prop!="md5"){
+		var str=data[prop].split("#");
+		if(str.length==2){
+		$("#var_uptime").html(str[0]);
+		$("#var_"+prop).html(str[1]);
+		}
+		}
+	}
+	if(data.masterlampstate!=null){
+	
+	var val=data.masterlampstate.split("#");
+	if(val.length==2&&val[1]=="1"){
+		//如果主灯开
+		$("#var_state_channel1").removeClass("active").removeClass("error").addClass("active");
+	}else if(val.length==2&&val[1]=="2"){
+		$("#var_state_channel1").removeClass("error").removeClass("active");
+	}else if(val.length==2&&val[1]=="0"){
+		$("#var_state_channel1").removeClass("error").removeClass("active").addClass("error");
+	}else  {
+		$("#var_state_channel1").removeClass("error").removeClass("active");
+	}
+	
+	}
+	if(data.slavelampstate!=null){
+		var val=data.slavelampstate.split("#");
+		if(val.length==2&&val[1]=="1"){
+			//如果主灯开
+			$("#var_state_channel2").removeClass("active").removeClass("error").addClass("active");
+		}else if(val.length==2&&val[1]=="2"){
+			$("#var_state_channel2").removeClass("error").removeClass("active");
+		}else if(val.length==2&&val[1]=="0"){
+			$("#var_state_channel2").removeClass("error").removeClass("active").addClass("error");
+		}else  {
+			$("#var_state_channel2").removeClass("error").removeClass("active");
+		}
+		
+		}
+}
+}
+
+function  GetWeather(node_id){
+	robotservice.callrobotservice("SmartLightService","GetWeather",{"lampid":node_id},showGetWeatherInfo,this,false);			 
+}
+function showGetWeatherInfo(data,callobj){
+if(data!=null&&data.result!="nodata"){
+	for(prop in data){
+		if(prop!="md5"){
+			$("#var_"+prop).html(data[prop]);
+		}
+	}
+}
+}
+/*]]>*/
+</script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" style="background-color:#eeedf2;">
+<img id="progressImgage" class="ajaxprogress" style="display:none" alt="" th:src="@{/images/ajax-loader.gif}"/> 
+<div id="maskOfProgressImage" class="ajaxmask" style="display:none"></div> 
+<div style="border-radius: 2px;  background-color: rgb(255, 255, 255);  box-shadow: 0px 5px 7px 0px rgba(86, 91, 120, 0.09);  position: absolute;  left: 5px;  top: 5px;  right:5px;  height: 162px;">
+  <div class="baseinfo_title" style="left: 15px;  top: 5px; ">
+基础信息
+  </div>
+  <div class="baseinfo_label" style="left: 15px;  top: 40px; ">
+路灯
+  </div>
+  <div class="baseinfo_label" style="left: 15px;  top: 70px; ">
+项目
+  </div>
+  <div class="baseinfo_label" style="left: 15px;  top: 100px; ">
+预案
+  </div>
+  <div class="baseinfo_label" style="left: 15px;  top: 130px; ">
+回路
+  </div>
+  
+  <div class="baseinfo_label" style="left: 50%;  top: 40px; ">
+时间
+  </div>
+  <div class="baseinfo_label" style="left: 50%;  top: 70px; ">
+集中器
+  </div>
+  <div class="baseinfo_label" style="left: 50%;  top: 100px; ">
+通道
+  </div>
+  <div class="baseinfo_label" style="left: 50%;  top: 130px; ">
+状态
+  </div> 
+   <div id="var_node_name" class="baseinfo_value" style="left: 15px;  top: 40px;transform: translateX(60px); ">
+---
+  </div>
+  <div id="var_project_name" class="baseinfo_value" style="left: 15px;  top: 70px;transform: translateX(60px); ">
+---
+  </div>
+  <div id="var_curent_plan" class="baseinfo_value" style="left: 15px;  top: 100px; transform: translateX(60px);">
+---
+  </div>
+  <div id="var_loop_name" class="baseinfo_value" style="left: 15px;  top: 130px;transform: translateX(60px); ">
+---
+  </div>
+  
+  <div id="var_uptime" class="baseinfo_value" style="left: 50%;  top: 40px; transform: translateX(60px);">
+---
+  </div>
+  <div id="var_ecc_name" class="baseinfo_value" style="left: 50%;  top: 70px;transform: translateX(60px); ">
+---
+  </div>
+  <div   class="baseinfo_value" style="left: 50%;  top: 100px; transform: translateX(60px);">
+ <div id="var_state_channel1" class="rect_channel active" style="left:10px;top:8px"></div>
+ <div  class="baseinfo_value" style="left:32px;">1</div>
+  <div id="var_state_channel2" class="rect_channel"   style="left:60px;top:8px"></div>
+  <div class="baseinfo_value"  style="left:82px;">2</div>
+  </div>
+  <div id="var_lamp_state" class="baseinfo_value" style="left: 50%;  top: 130px; transform: translateX(60px);">
+---
+  </div> 
+  <div class="line_横线" style="top:37px"></div>
+  <div class="line_横线" style="top:70px"></div> 
+  <div class="line_横线" style="top:100px"></div> 
+  <div class="line_横线" style="top:130px"></div> 
+  <div class="line_竖线"  style="left:50%;transform:translateX(-20px);" >
+ </div>
+</div>
+
+<div style="border-radius: 2px;  background-color: rgb(255, 255, 255);  box-shadow: 0px 5px 7px 0px rgba(86, 91, 120, 0.09);  position: absolute;  left: 5px;  top: 172px;  right:5px;  height: 212px;">
+  <div class="baseinfo_title" style="left: 15px;  top: 5px; ">
+实时数据
+  </div>
+    <div class="line_横线" style="top:37px"></div>
+  <div style="position: absolute;top:60px">
+  <div class="targetvalue_rect" style="left:10px">
+<div id="var_brightnessgrade" class="targetvalue_value" >---</div>
+<div class="targetvalue_name">亮度(%)</div>
+  </div>
+    <div class="targetvalue_rect" style="left:121px">
+<div id="var_voltage" class="targetvalue_value" >---</div>
+<div class="targetvalue_name">电压(V)</div>
+  </div>
+    <div class="targetvalue_rect" style="left:232px">
+<div id="var_currents" class="targetvalue_value" >---</div>
+<div class="targetvalue_name">电流(A)</div>
+  </div>
+    <div class="targetvalue_rect" style="left:343px">
+<div id="var_power" class="targetvalue_value" >---</div>
+<div class="targetvalue_name">功率(W)</div>
+  </div>
+      <div class="targetvalue_rect" style="left:454px">
+<div id="var_powerfactor" class="targetvalue_value" >---</div>
+<div class="targetvalue_name">功率因素</div>
+  </div>
+      <div class="targetvalue_rect" style="left:10px;top:73px">
+<div id="var_pm25" class="targetvalue_value" >---</div>
+<div class="targetvalue_name">PM2.5</div>
+  </div>
+  <div class="targetvalue_rect" style="left:121px;top:73px">
+<div id="var_tmp" class="targetvalue_value" >---</div>
+<div class="targetvalue_name">温度(℃)</div>
+  </div>
+      <div class="targetvalue_rect" style="left:232px;top:73px">
+<div id="var_hum" class="targetvalue_value" >---</div>
+<div class="targetvalue_name">湿度(%)</div>
+  </div>
+  </div>
+  
+</div>
+
+<div style="border-radius: 2px;  background-color: rgb(255, 255, 255);  box-shadow: 0px 5px 7px 0px rgba(86, 91, 120, 0.09);  position: absolute;  left: 5px;  top: 394px;  right:5px;  height: 331px;">
+  <div class="baseinfo_title" style="left: 15px;  top: 5px; ">
+告警数据
+  </div>
+    <div class="line_横线" style="top:37px"></div>
+    <!-- 日历开始 -->
+    <div style="position: absolute;left:10px;padding:5px; top:47px;border-width: 1px;border-style: solid;border-color: rgb(217, 240, 255)">
+    
+    <div id="calendar" class="calendar">
+        <div class="prev">
+            <button id="prev_M">上个月</button>
+        </div>
+
+     <span id="month"></span>月<span id="year"></span>年
+
+      <div class="next">
+            <button id="next_M">下个月</button>
+       </div>
+   </div>
+ 
+   <div style="clear:both"></div>
+   <!--日历主体-->
+   <div id="calendar_weektitle"></div>
+   <div id="calendar_weekday"></div>
+    <div style="clear:both;"></div>
+   
+    
+   </div>
+  <!-- 日历结束 -->
+  <div id="div_nowarn" style="position: absolute;left:570px;padding:5px; top:47px;">
+     <div class="矩形_7" style="left:240px;top:120px;height:73.5px"></div>
+     <div class="矩形_7" style="left:195px;top:66.5px;height:127px"></div>
+     <div class="矩形_7" style="left:150px;top:27.5px;height:166px"></div>
+     <div class="矩形_7" style="left:105px;top:98.5px;height:95px"></div>
+     <div class="矩形_7" style="left:60px;top:63.5px;height:130px"></div>
+     <div class="矩形_7" style="left:15px;top:113.5px;height:80px"></div>
+     <div class="矩形_7" style="background-color: rgb(209, 211, 223); position: absolute;  left: 0px;  top: 193.5px; width: 285px; height: 1px;"></div>
+     <div style="font-size: 12px;font-family: 'Hiragino Sans GB'; color: rgb(86, 91, 120);  line-height: 1.043;  text-align: left;  position: absolute;  left: 63.5px;  top: 221.022px;width:290px">运行状况良好,没有活动告警</div>
+     <i class="glyphicon glyphicon-ok" style="left:146px;top:125px;font-size: 25px;color:rgb(86, 91, 120)"></i>  
+  </div>
+  
+</div>
+ 	</body>
+</html>

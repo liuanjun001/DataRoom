@@ -1,0 +1,27 @@
+   .icon-areanormal{
+	background:url('../img/area1816.png') no-repeat center center;
+     }
+   .icon-eccnormal{
+	background:url('../img/ecc1816.png') no-repeat center center;
+     }	 
+    .icon-stationnormal{
+	background:url('../img/station1816.png') no-repeat center center;
+     }
+    .icon-lampnormal{
+	background:url('../img/lamp1816.png') no-repeat center center;
+     }
+    .icon-roadnormal{
+	background:url('../img/road1816.png') no-repeat center center;
+     }
+    .icon-loopnormal{
+	background:url('../img/loop1816.png') no-repeat center center;
+     }      
+    .icon-stationdisable{
+	background:url('../images/dhwqy.png') no-repeat center center;
+     } 
+     .icon-stationdown{
+	background:url('../images/dhgz.png') no-repeat center center;
+     }
+    .icon-solarlampnormal{
+	background:url('../img/solarlamp1816.png') no-repeat center center;
+     }     

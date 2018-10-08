@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+    <head xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" >
+<!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="#{system.systemname}"></title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+    <link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/bootstrap-treeview.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+ 	<link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/ybmps.css}" />
+	<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/_all-skins.css}" />
+	<script th:src="@{/jQuery/jQuery-2.1.4.min.js}"></script>
+	<script th:src="@{/js/bootstrap-treeview.min.js}"></script>
+	<script th:src="@{/easyui/jquery.easyui.min.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>	
+	<script th:src="@{/js/app.js}"></script>
+	<script th:src="@{/js/RobotComm.js}"></script>
+	<script th:src="@{/js/robotservice.js}" type="text/javascript"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.dataTables.js}"></script>
+    <script th:src="@{/js/echarts-all.js}" type="text/javascript"></script>
+    
+    </head>
+   <script th:inline="javascript" >
+   /*<![CDATA[*/
+function DHIconSelectCompent(){
+		   this.value='';
+		  this.container;
+   };
+   DHIconSelectCompent.init=function(item,icon){
+	   this.value=icon;
+	   this.container=item;
+		var innerhtml="";
+		if( this.value!=undefined&& this.value!=null&& this.value.indexOf("glyphicon" )>=0){
+			innerhtml="<i id='DHIconSelectCompent_icon_prewdisplay' class='"+this.value+"'/>";
+		}else if( this.value!=undefined&& this.value!=null&& this.value.indexOf("glyphicon" )<0){
+			var baseurl=/*[[@{/}]]*/"../";
+			innerhtml="<img id='DHIconSelectCompent_icon_prewdisplay' src='"+baseurl+this.value+"'/>";
+		}
+		var bttext=/*[[#{选取}]]*/"选取";
+		innerhtml+="<input type='button'  class='btn btn-primary btn-sm'   onclick='DHIconSelectCompent.selectIconWindow();' value='"+bttext+"'></input>";
+		item.html(innerhtml);
+		
+   }
+   DHIconSelectCompent.loaddata=function(){
+	   var data=[{"icon":"glyphicon glyphicon-asterisk","iconname":"glyphicon glyphicon-asterisk"},
+		   {"icon":"glyphicon glyphicon-plus","iconname":"glyphicon glyphicon-plus"},
+		   {"icon":"glyphicon glyphicon-plus","iconname":"glyphicon glyphicon-plus"},
+		   {"icon":"glyphicon glyphicon-plus","iconname":"glyphicon glyphicon-plus"},
+		   {"icon":"glyphicon glyphicon-plus","iconname":"glyphicon glyphicon-plus"},
+		   {"icon":"glyphicon glyphicon-plus","iconname":"glyphicon glyphicon-plus"},
+		   {"icon":"glyphicon glyphicon-plus","iconname":"glyphicon glyphicon-plus"},
+		   {"icon":"glyphicon glyphicon-plus","iconname":"glyphicon glyphicon-plus"}];
+	   DHIconSelectCompent.showloaddata(data);
+	   }
+   DHIconSelectCompent.showloaddata=function(data,callobj){
+	   var compentlibs=data;
+	   var rows=compentlibs.length/6;
+	   htmlstr="";
+	   for (var i = 0; i < rows; i++) {
+	   	htmlstr+='<div class="row" style="width:100%;margin:1px">';
+	   	 for (var j = 0; j < 6; j++) {
+	   	 	if((i*6+j)>=compentlibs.length){
+	   	 		break;
+	   	 	}
+	   	 	var _compentitem=compentlibs[i*6+j];
+	   	 	 	htmlstr+='<div class="col-sm-2 col-md-2">'+
+	        '<a href="#" onclick="DHIconSelectCompent.value=\''+_compentitem.icon+'\';" class="thumbnail">';
+	        if(_compentitem.icon.indexOf("glyphicon" )>=0){
+	        	htmlstr+=' <i class="'+_compentitem.icon+'" />';
+	        }else{
+	        	htmlstr+=' <img src="'+_compentitem.icon+'"'+
+		           '      alt="'+_compentitem.iconname+'" />';
+	        }
+	        htmlstr+='<div class="caption"><h5>'+_compentitem.iconname+'</h5></div>'+
+	        '</a>'+
+	    '</div>';
+	   	 }
+	   		htmlstr+='</div>'; 
+	   }
+	    $("#showDatacontainer").append(htmlstr);
+	 
+   }
+   DHIconSelectCompent.selectIconWindow=function(){
+	   var selecticontext=/*[[#{选取图标}]]*/"选取图标";;
+		var htmlstr='<div  id="selectIconDiv"   role="dialog"  class="modal fade in" style="display: none;width:'+($(document).width()-80)+'px">'+
+		'<div class="modal-dialog"  style="width:'+($(document).width()-80)+'px;max-width:1024px">'+
+			'<div class="modal-content">'+
+	'       <div class="modal-header">'+
+	 '           <button type="button" class="close"'+ 
+	  '             data-dismiss="modal" aria-hidden="true">'+
+	  '                &times;'+
+	  '          </button>'+
+	  '          <h4 class="modal-title" id="myOtherSerialModalLabel">'+
+	  selecticontext+
+	  '          </h4>'+
+	  '       </div>'+
+	   '      <div class="modal-body">'+
+	   '	<div class="container"  id="showDatacontainer" style="width:100%;height:'+($(document).height()-280)+'px;max-height:1024px;padding:1px;margin:1px;overflow:auto"   > '+
+	'	 </div>'+
+	  '       </div>'+
+	  '<div class="modal-footer">'+
+	 '&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">关闭</button> <button class="btn btn-primary" onclick="DHIconSelectCompent.selectIcon();">选择</button>'+
+					'</div>'+
+		'</div>'+
+			'</div>'+
+	   '      </div>';
+	   $("body").append(htmlstr);
+	  
+	    $("#selectIconDiv").modal().css({    width: "auto",
+	     height: "auto",
+	    'margin-left': function () {
+	    	 
+	       return  ( $(document).width()-$(this).width() )/ 2;
+	   }});
+	   $("#selectIconDiv").on("hide.bs.modal",function(){
+	    $("#selectIconDiv").remove();
+	   });
+	   DHIconSelectCompent.loaddata();
+   }
+   DHIconSelectCompent.selectIcon=function(){
+	   $('#selectIconDiv').modal('hide');
+		var innerhtml="";
+		if( this.value!=undefined&& this.value!=null&& this.value.indexOf("glyphicon" )>=0){
+			innerhtml="<i id='DHIconSelectCompent_icon_prewdisplay' class='"+this.value+"'/>";
+		}else if( this.value!=undefined&& this.value!=null&& this.value.indexOf("glyphicon" )<0){
+			var baseurl=/*[[@{/}]]*/"../";
+			innerhtml="<img id='DHIconSelectCompent_icon_prewdisplay' src='"+baseurl+this.value+"'/>";
+		}
+		var bttext=/*[[#{选取}]]*/"选取";
+		innerhtml+="<input type='button'  class='btn btn-primary btn-sm'   onclick='DHIconSelectCompent.selectIconWindow();' value='"+bttext+"'></input>";
+		this.container.html(innerhtml);
+   }
+   function init(){
+   	robotservice.loginPage=/*[[@{/}+#{LoginPage}]]*/"../login.html";
+   	 var targettree=$("#treegrid1");
+   	 targettree.treegrid({onClickRow:selectrow});
+   	QueryData(); 
+  }
+  function QueryData(){
+	   selectedrow=null;
+	   showbtnstate();
+		robotservice.callrobotservice("MenuService","QueryMenu",{}, refreshdata,this,true);
+
+  }
+  var menudata=null;
+  /********刷新数据返回处理**********/
+  function refreshdata(data,callobj){
+	   var targettree=$("#treegrid1");
+	   targettree.treegrid('clearSelections');
+	   targettree.treegrid('loadData', data);
+	   menudata=data;
+  }
+  function formatterenablecol(value, row, index){
+	  if(row.enable==1){
+		  return /*[[#{启用}]]*/"启用";
+	  } else{
+		  return /*[[#{停用}]]*/"停用";
+	  }
+  }
+  function formattericoncol(value, row, index){
+	if(value!=undefined&&value.indexOf("glyphicon" )>=0){
+		return "<i class='"+value+"' ></i>";
+	}else if(value!=undefined){
+		var baseurl=/*[[@{/}]]*/"../";
+		return "<img src='"+baseurl+value+"' alt='"+value+"'/>";
+	}else{
+		return "";
+	}   
+  }
+  var selectedrow=null;
+  function selectrow(row){
+	   selectedrow=row;
+	   showbtnstate();
+  }
+  function showbtnstate(){
+	   if(selectedrow==null){
+		  $("#btn_del").attr("disabled",true); 
+		  $("#btn_edit").attr("disabled",true); 
+		  $("#btn_add").attr("disabled",false);
+		  $("#btn_enabledordisabled").attr("disabled",true); 
+	   }else{
+		 $("#btn_del").attr("disabled",false);
+		 $("#btn_edit").attr("disabled",false); 
+		 $("#btn_add").attr("disabled",false);
+		 $("#btn_enabledordisabled").attr("disabled",false);
+		 if(selectedrow.enable==1){
+			 $("#font_enabledordisabled").html(/*[[#{停用}]]*/"停用");
+			 $("#i_enabledordisabled").attr("class","glyphicon glyphicon-pause");
+		 }else{
+			 $("#font_enabledordisabled").html(/*[[#{启用}]]*/"启用");
+			 $("#i_enabledordisabled").attr("class","glyphicon glyphicon-play");
+		 }
+	   }
+  }
+  /***删除数据**/
+  function deldata(){
+	   var r=confirm(/*[[#{你确定删除这个数据吗?}]]*/"你确定删除这个数据吗?");
+	   if(r==true){
+		robotservice.callrobotservice("MenuService","delMenu",{"menu_id":selectedrow.menu_id}, showDelResult,this,true);
+		} 
+  }
+  /***删除数据回调****/
+  function showDelResult(data,callobj){
+	   if(data.code==1){
+		   QueryData(); 
+	   }else{
+		   alert(data.message);
+	   }
+  }
+  function enableordisabled(){
+	if(selectedrow.enable==1){
+	   var r=confirm(/*[[#{你确定要停用这个菜单吗?}]]*/"你确定要停用这个菜单吗?");
+	   if(r==true){
+		robotservice.callrobotservice("MenuService","disabledMenu",{"menu_id":selectedrow.menu_id}, showenableordisabledResult,this,true);
+		} 
+	   }else{
+		var r=confirm(/*[[#{你确定要启用这个菜单吗?}]]*/"你确定要启用这个菜单吗?");
+		   if(r==true){
+			robotservice.callrobotservice("MenuService","enabledMenu",{"menu_id":selectedrow.menu_id}, showenableordisabledResult,this,true);
+			}    
+	   }
+  }
+  /***启停菜单回调****/
+  function showenableordisabledResult(data,callobj){
+	   if(data.code==1){
+		   QueryData(); 
+	   }else{
+		   alert(data.message);
+	   }
+  }
+  var editmenu_id=null;
+  /***新增操作***/
+  function fun_add(){
+	      $("#AddOrEditDiv").modal().css({    width: "auto",
+	    	     height: "auto",
+	    	    'margin-left': function () {
+	    	       return  ( $(document).width()-$(this).width() )/ 2;
+	    	   }});
+	      fun_init_parentmenu_combox();
+	      $("#i_menuname").val("");
+	      $("#i_menu_url").val("");
+	      $("#i_order_level").val("");
+	      DHIconSelectCompent.init($("#i_icon"));
+	      editmenu_id=null;
+  }
+  /***修改操作***/
+  function fun_edit(){
+	   $("#AddOrEditDiv").modal().css({    width: "auto",
+  	     height: "auto",
+  	    'margin-left': function () {
+  	    	 
+  	       return  ( $(document).width()-$(this).width() )/ 2;
+  	   }});
+    fun_init_parentmenu_combox(selectedrow._parentId);
+    $("#i_menuname").val(selectedrow.menu_name);
+    $("#i_menu_url").val(selectedrow.menu_url);
+    $("#i_order_level").val(selectedrow.order_level);
+    DHIconSelectCompent.init($("#i_icon"),selectedrow.menu_icon);
+    editmenu_id=selectedrow.menu_id;
+  }
+ 
+  var innerhtml="";
+  function fun_init_parentmenu_combox(menu_id){
+	  innerhtml="<option value='' "+(menu_id!=undefined&&menu_id!=null?"selected='selected'":"")+" >根目录</option>";
+	  fillinnerhtml(menudata,"",menu_id);
+	  $("#i_parentmenu").html(innerhtml);
+  }
+  function fillinnerhtml(data,fillspace,menu_id){
+	  if(data!=null&&data!=undefined){
+		for(var i=0;i<data.length;i++){
+			innerhtml+="<option value='"+data[i].menu_id+"' "+(menu_id!=undefined&&menu_id==data[i].menu_id?"selected='selected'":"")+">"+fillspace+data[i].menu_name+"</option>";
+			if(data[i].children!=null){
+				fillinnerhtml(data[i].children,fillspace+"    ",menu_id);
+			}
+		}  
+	  }
+  }
+  function FSaveAddOrEditInfo(){
+	  var menu_name=$("#i_menuname").val();
+	  if(menu_name==null||menu_name.length<=2){
+		  alert(/*[[#{菜单名称必须2个字符以上}]]*/"菜单名称必须2个字符以上");
+		  return;
+	  }
+	  var menu_url=$("#i_menu_url").val();
+	 var menu_icon=DHIconSelectCompent.value;
+	 var menu_parent=$("#i_parentmenu").val();
+	 if(menu_parent==""){
+		 menu_parent=null;
+	 }
+	 var order_level=$("#i_order_level").val();
+	if(editmenu_id==null){
+		//新增操作
+		robotservice.callrobotservice("MenuService","addMenu",{"menu_name":menu_name,"menu_url":menu_url,"menu_icon":menu_icon,"menu_parent":menu_parent,"order_level":order_level}, showenableordisabledResult,this,true);
+	}  else{
+		robotservice.callrobotservice("MenuService","editMenu",{"menu_id":editmenu_id,"menu_name":menu_name,"menu_url":menu_url,"menu_icon":menu_icon,"menu_parent":menu_parent,"order_level":order_level}, showenableordisabledResult,this,true);
+	}
+	   $('#AddOrEditDiv').modal('hide');
+  }
+   	 /*]]>*/  
+   </script>
+    
+    <body class="hold-transition skin-blue sidebar-mini"  onload="init()" >
+    	<img id="progressImgage" class="ajaxprogress" style="display:none" alt="" src="../images/ajax-loader.gif"/> 
+<div id="maskOfProgressImage" class="ajaxmask" style="display:none"></div> 
+
+ <div style="position: absolute;left: 1px;right: 0px;top: 2px; height: 30px;">
+		<div class="btn-toolbar" role="toolbar">
+ <div class="btn-group"> 
+  <button id="btn_refresh" type="button" class="btn btn-primary btn-sm" onclick="QueryData();" ><i class="glyphicon glyphicon-refresh" ></i><font th:text="#{刷新}">刷新</font></button>
+  <button id="btn_add" type="button" class="btn btn-primary btn-sm" onclick="fun_add();"  ><i class="glyphicon glyphicon-plus-sign" ></i><font th:text="#{新增}">新增</font></button> 
+  <button id="btn_edit" type="button" class="btn btn-primary btn-sm" onclick="fun_edit();"  ><i class="glyphicon glyphicon-pencil" ></i><font th:text="#{修改}">修改</font></button> 
+  <button id="btn_del" type="button" class="btn btn-primary btn-sm" onclick="deldata();" ><i class="glyphicon glyphicon-remove"></i><font th:text="#{删除}">删除</font></button> 
+   <button id="btn_enabledordisabled" type="button" class="btn btn-primary btn-sm" onclick="enableordisabled();" ><i class="glyphicon glyphicon-remove" id="i_enabledordisabled"></i><font th:text="#{启用}" id="font_enabledordisabled">启用</font></button>
+ </div> 
+ </div>
+ </div>
+  <div  style="position: absolute;left: 1px;right: 0px;top: 35px; bottom: 0px;overflow: auto;">
+<table  id="treegrid1"  idField="menu_id" treeField="menu_name" class="easyui-treegrid table table-bordered table-hover" fit="false" >
+<thead style="color: #ECF0F1; background: rgba(52, 73, 94, 0.94);">
+<tr class="theader">
+<th field="warnlevel" width="20px"></th>
+<th field="menu_name"  width="220px" th:text="#{名称}">名称</th>
+<th field="menu_url"	th:text="#{链接地址}">链接地址</th>
+<th field="enable" formatter="formatterenablecol" width="100px" th:text="#{启用状态}">启用状态</th>
+<th field="order_level"   width="60px" th:text="#{排序编号}">排序编号</th>
+<th field="menu_icon" formatter="formattericoncol" width="180px" th:text="#{图标}">图标</th>
+</tr>
+</thead>
+</table>
+</div>
+
+<div  id="AddOrEditDiv"    class="modal fade in" style="display: none;" aria-hidden="true" data-backdrop="static" >
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" 
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="addDevicetitleDiv" th:text="#{新增菜单 }">新增菜单 </h4>
+         </div>
+         <div class="modal-body" style="max-height:90%;overflow:auto;">
+   	<div class="container" style="width:100%"   >
+   	<form id="AddOrEditDivForm" class="form-horizontal" role="form" >
+   	   	<div class="item form-group">
+			<label class="control-label"	th:text="#{上级菜单 }">上级菜单</label>
+			<select  id="i_parentmenu" type="select" placeholder="双击选择局站" class="form-control"  />
+		</div>
+   	 	<div class="item form-group">
+			<label class="control-label"	th:text="#{菜单名称}">菜单名称</label>
+			<input id="i_menuname" type="text" th:placeholder="#{请输入菜单名称}" class="form-control"  />
+		</div>
+		<div class="item form-group">
+			<label class="control-label"	th:text="#{链接地址}">链接地址</label>
+			<input id="i_menu_url" type="text"  th:placeholder="#{请输入链接地址}" class="form-control"  />
+		</div>
+		<div class="item form-group">
+			<label class="control-label"	th:text="#{排序编号}">排序编号</label>
+			<input id="i_order_level" type="number"   class="form-control"  />
+		</div>
+		<div class="item form-group">
+			<label class="control-label"	th:text="#{图标}">图标</label>
+			<div id="i_icon">
+			</div>
+		</div>
+		
+   	</form>
+</div>
+         </div>
+  	  <div class="modal-footer">
+					<button class="btn btn-primary" onclick="FSaveAddOrEditInfo();"><i class="glyphicon glyphicon-floppy-disk"></i>保存</button>
+
+			  </div>
+         </div>
+         </div>
+         </div>
+         
+ 	</body>
+</html>

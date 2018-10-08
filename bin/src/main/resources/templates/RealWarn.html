@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta charset="utf-8" />
+<!--<meta http-equiv="X-UA-Compatible" content="IE=11">-->
+<title th:text="#{system.systemname}">实时告警</title>
+<link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/css/ybmps.css}" />
+<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+<link rel="stylesheet"  th:href="@{/css/realstatefrmtab.css}" />
+<link rel="stylesheet" th:href="@{/css/_all-skins.css}" />
+<style>
+body {
+	overflow: auto;
+	height: 100%;
+	margin: 1px
+}
+</style>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+
+
+<script th:src="@{/JQueryUi/jquery-ui.min.js}"></script>
+<script th:src="@{/easyui/jquery.easyui.min.js}"></script>
+
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/robotservice.js}" type="text/javascript"></script>
+<script type="text/javascript" th:src="@{/js/jquery.dataTables.js}"></script>
+<script type="text/javascript" th:src="@{/js/RobotComm.js}"></script>
+
+<script th:src="@{/js/compent/RobotRealWarn.js}"></script>
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+	var realwarndatamd5=null;
+var jobid=0;
+$().ready(function(){
+	robotservice.robotuserid=/*[[${session.userid}]]*/null;
+	robotservice.robotdisplayname=/*[[${session.displayname}]]*/null;
+	robotservice.robotusername=/*[[${session.username}]]*/null;
+	robotservice.loginPage=/*[[#{LoginPage}]]*/./login.html;
+	robotservice.baseurl= /*[[@{/}]]*/ '';
+	  	if(	robotservice.robotuserid==null){
+    		window.location.href="/";
+    	}
+		$(document).on("click", "#nav_title_list li", function() {
+			var bStopIndex = $(this).index();
+			var liobj= $(this)[0].dataset;
+			
+			var iframe_box = $("#iframe_box");
+			$("#nav_title_list li").removeClass("active").eq(bStopIndex).addClass("active");
+			//iframe_box.find(".show_iframe").hide().eq(bStopIndex).show();
+			creatIframe(liobj.href,liobj.id,"");
+			localStorage.setItem("lastaccesswarntab",bStopIndex);
+		});
+		var bStopIndex=localStorage.getItem("lastaccesswarntab");
+		if(bStopIndex!=null){
+		$("#nav_title_list li").eq(bStopIndex).trigger("click");
+		}
+//RobotRealWarn.init($("#realwarncontent"));
+		jobid = setInterval("QueryUserStatic();",1000*30);
+		QueryUserStatic();
+});
+/*创建iframe*/
+function creatIframe(href, llid, titleName) {
+   var topWindow = $(document);
+     //   show_nav = topWindow.find('#min_title_list'),
+    var   iframe_box=topWindow.find('#view_iframe_box');
+ var iframe=topWindow.find("#view_iframe_"+llid);
+ if(iframe.length==0){
+	 iframe_box.find(".show_iframe").hide();
+	iframe_box.append('<div class="show_iframe" id="div_show_iframe_'+llid+'"><iframe id="view_iframe_'+llid+'" frameborder="0" src='+href+'></iframe></div>');
+ }else{
+	 iframe_box.find(".show_iframe").hide();
+	 iframe_box.find("#div_show_iframe_"+llid).show();
+	 cur_showiframe=topWindow.find("#view_iframe_"+llid);
+
+ }
+ cur_showiframe=topWindow.find("#view_iframe_"+llid);
+
+	//setIframeHeight(iframe_box);
+    /*
+	var showBox = iframe_box.find('.show_iframe:visible');
+    showBox.find('iframe').load(function() {
+        //	showBox.find('.loading').hide();
+    });
+	*/
+	iframe_box.find('iframe').load(function() {
+	
+ });
+}
+function QueryUserStatic(){
+	robotservice.callrobotservice("SmartLightService","QueryUserStatic",{"md5":realwarndatamd5},showQueryUserStatic,this,false);			 
+}
+function showQueryUserStatic(data,callobj){
+if(data!=null){
+	realwarndatamd5=data.md5;
+	$("#warnlamp").html("告警路灯 "+data.count_lamp_warn);
+	$("#normallamp").html("正常路灯 "+data.count_lamp_normal);
+	$("#warnroate").html("告警率  "+(Math.floor((data.count_lamp_warn*100/data.count_lamp)*100)/100)+"%");
+}
+}
+/*]]>*/
+</script>
+</head>
+<body>
+	<img id="progressImgage" class="ajaxprogress" style="display: none"
+		alt=""  th:src="@{/images/ajax-loader.gif}" />
+	<div id="maskOfProgressImage" class="ajaxmask" style="display: none"></div>
+	 <div   style="position: absolute;left:0px;right: 0px;top: 0px; bottom: 0px;">
+<section class="Hui-article-box">
+    <div id="Hui-tabNav" class="Hui-tabNav">
+        <div class="Hui-tabNav-wp">
+        <ul id="nav_title_list" class="acrossTab cl" style="padding-left: 6px;">
+          <li data-id="1" data-href="warn/active.html" class="active"><span data-href="">活动告警</span><em></em></li>
+          <li data-id="2" data-href="warn/confirm.html" ><span data-href="">已确认</span><em></em></li> 
+          <li data-id="3" data-href="warn/clearwarn.html" ><span data-href="">最近消除</span><em></em></li>
+          <li data-id="4" data-href="warn/history.html" ><span data-href="">历史告警</span><em></em></li>  
+         
+        </ul>
+        </div>
+
+    </div>
+    <div id="view_iframe_box" style="position: absolute;top:34px;bottom:0;left:0; right:0;overflow:hidden">
+           
+    </div>
+    </section>
+    </div>
+<div style="position: absolute;right: 0px;top: 5px;width:310px; z-index:999">
+<div style="position: absolute;right: 210px;top: 0px; width:90px;color: rgb(255, 0, 0)" id="warnlamp">告警路灯 0</div>
+<div style="position: absolute;right: 120px;top: 0px; width:90px;color: rgb(0, 226, 0)" id="normallamp">正常路灯 0</div>
+<div style="position: absolute;right:10px;top: 0px; width:90px;color: rgb(0, 0, 0)" id="warnroate">告警率 0%</div>
+</div>
+</body>
+</html>

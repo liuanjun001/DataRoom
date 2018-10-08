@@ -1,0 +1,37 @@
+/*
+<script th:inline="javascript" type="text/javascript">
+*/
+/*<![CDATA[*/
+function	include (path) {
+try{
+
+    var a = document.createElement("script");
+    a.type = "text/javascript";
+	var rootpath=/*[[@{/}]]*/ '';
+    a.src = rootpath+path;
+    var head = document.getElementsByTagName("head")[0];
+    head.appendChild(a);
+	}catch(err)
+		{
+  console.log(err);
+		}
+}
+include("js/RobotComm.js");
+include("js/robotservice.js");
+include("js/jquery.cookie.js");
+ $(window).load(function() {
+RobotComm.baseurl=/*[[@{/}]]*/ '';
+robotservice.robotuserid=/*[[${session.userid}]]*/null;
+robotservice.robotdisplayname=/*[[${session.displayname}]]*/null;
+robotservice.robotusername=/*[[${session.username}]]*/null;
+robotservice.loginPage=/*[[#{LoginPage}]]*/./login.html;
+robotservice.baseurl= /*[[@{/}]]*/ '';
+if(	robotservice.robotuserid==null){
+  window.location.href=RobotComm.baseurl+robotservice.loginPage;
+}
+});
+
+/*]]>*/
+/*
+</script>
+*/

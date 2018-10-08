@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<LINK rel="stylesheet" type="text/css" href="images/common.css" media="screen" />
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="css/bootstrap.min.css"/>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="fonts/css/font-awesome.min.css"/>
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"/>
+  <!-- Theme style -->
+  <link rel="stylesheet" href="css/AdminLTE.min.css"/>
+
+<meta name="viewport" content="width=device-width, user-scalable=true,initial-scale=1" />
+<title th:text="#{login.header}">LOGIN</title>
+<script src="js/jquery-1.12.4.min.js" type="text/javascript"></script>
+<script src="js/app.js" type="text/javascript"></script>
+<script th:src="@{/js/RobotComm.js}" type="text/javascript"></script>
+<script th:src="@{/js/robotservice.js}" type="text/javascript"></script>
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+	var loginAuto = function () {
+		if(event.keyCode != 13) return
+		var checkLen = document.getElementById('checkInput').value.length
+		if(checkLen >= 4) {
+			login();
+		} else {
+			alert("[[#{val.checkcode.len}]]");
+		}
+	};
+
+	var login = function () {
+		var usr = document.getElementById('usrInput').value;
+		var pwd = document.getElementById('pwdInput').value;
+
+		robotservice.callrobotservice("LoginService", "LoginFromMobile", {
+			username: usr,
+			password: pwd
+		}, loginResutFuc);
+	};
+
+	var loginResutFuc = function (data) {
+		if(data.result.length == 32) {
+			window.location.href = "main.html";
+			return;
+		}
+		if(data.result == -1) {
+			alert(/*[[#{login.infoerror}]]*/"用户名错");
+		}
+		if(data.result == 0) {
+			alert(/*[[#{login.systemerror}]]*/"系统错误！");
+		}
+		if(data.result == -2) {
+			alert(/*[[#{login.checkcodeerror}]]*/"验证码错误！");
+		}
+	};
+	
+	$().ready(function(){
+		 var vzoom=$(document).width()/1920;
+		 var hzoom=$(document).height()/1080;
+		 $("#loginFrame").css("zoom",""+(vzoom>hzoom?hzoom:vzoom)+"");
+		 robotservice.baseurl="./";
+	});
+	function changelanguage(){
+		var s_language = document.getElementById('s_language').value;
+		window.location.href="login.html?lang="+s_language;
+	}
+	 /*]]>*/
+</script>
+</head>
+
+<BODY class="hold-transition login-page">
+	<div id="loginFrame"
+		style='background:#4771a0; position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px; margin: 0px; padding: 0px; overflow: hidden;'>
+
+		<DIV id="header">
+			<DIV id="logo">
+				<A title="专注能耗和预警" href=""></A>
+			</DIV>
+		</DIV>
+		<DIV id="loginBox" class="login-box-body">
+			<DIV id="loginBoxHeader"></DIV>
+			<DIV id="loginBoxBody">
+				<UL class="floatLeft">
+					<LI>
+						<H4 th:text="#{login.form.title}">Login</H4>
+					</LI>
+					<LI class="form-group has-feedback">
+						<input id="usrInput" class="form-control" th:placeholder="#{login.user}" placeholder="用户名"
+						onkeypress="if(event.keyCode==13) {$('#pwdInput').focus();return false;}"
+						type="text" />
+					</LI>
+					<LI class="form-group has-feedback">
+						<input id="pwdInput" maxlength="30" class="form-control" th:placeholder="#{login.passwd}" placeholder="密码"
+						onkeypress="if(event.keyCode==13) {login();return false;}"
+						type="password" />
+					</LI>
+					<LI>
+						<P th:text="#{login.language}+':'">语言:</P>
+						<select id="s_language" width="30"
+						onchange="changelanguage();" >
+						<option value="zh_CN" th:if="${#locale.getCountry().equals('CN')}" selected="selected">中文</option>
+						<option value="zh_CN" th:unless="${#locale.getCountry().equals('CN')}" >中文</option>
+						<option value="en_US" th:if="${#locale.getCountry().equals('US')}" selected="selected">English</option>
+						<option value="en_US" th:unless="${#locale.getCountry().equals('US')}" >English</option>
+						</select>
+					</LI>
+					<LI class="highlight"><a class="btn btn-default submit"
+						onclick="login()" th:text="#{login.login}">登录</a>
+						<a id="regBtn" href="" target="_blank" th:text="#{login.forgetpasswd}">忘记密码？</a>
+					</LI>
+				</UL>
+				<DIV class="floatRight" th:text="#{login.form.desc}">
+					欢迎使用智慧路灯监控系统
+				</DIV>
+				<BR clear="all"/>
+			</DIV>
+			<DIV id="loginBoxFooter"></DIV>
+		</DIV>
+		<DIV id="footer"></DIV>
+	</div>
+</BODY>
+
+</html>

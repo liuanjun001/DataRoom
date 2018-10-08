@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <head>
+ <!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"	name="viewport" />
+<title th:text="#{system.systemname}"></title>
+<link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/css/ybmps.css}" />
+<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+<link rel="stylesheet"  th:href="@{/css/realstatefrmtab.css}" />
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+
+<link rel="stylesheet" th:href="@{/css/_all-skins.css}" />
+<link rel="stylesheet" th:href="@{/css/daterangepicker.css}" />
+<style th:inline="text">
+ body { overflow:auto;font-family: "Hiragino Sans GB"; }
+ 
+ </style>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/JQueryUi/jquery-ui.min.js}"></script>
+<script th:src="@{/easyui/jquery.easyui.min.js}"></script>	
+<script th:src="@{/js/moment.js}"></script>
+<script  th:src="@{/js/daterangepicker.js}"></script>
+<script  th:src="@{/js/bootstrap.min.js}"></script>
+<script  th:src="@{/js/robotservice.js}" type="text/javascript"></script>
+<script type="text/javascript"  th:src="@{/js/jquery.dataTables.js}"></script>
+<script type="text/javascript"  th:src="@{/js/RobotComm.js}"></script>
+
+<script  th:src="@{/js/echarts.min.js}" type="text/javascript"></script>
+<script  th:src="@{/js/theme/shine.js}" type="text/javascript"></script>
+<script th:inline="javascript" type="text/javascript">
+	/*<![CDATA[*/
+function refreshstation(stationid,stationname,areaid,areaname){
+ 
+	$("#var_node_name").html(stationname);
+
+}
+function refresharea(areaid,areaname){
+
+ 
+}
+
+/*]]>*/
+</script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini" style="background-color:#eeedf2;">
+<img id="progressImgage" class="ajaxprogress" style="display:none" alt="" th:src="@{/images/ajax-loader.gif}"/> 
+<div id="maskOfProgressImage" class="ajaxmask" style="display:none"></div> 
+
+
+<div style=" border-radius: 2.5px;  background-color: rgb(255, 255, 255);  box-shadow: 0px 5px 7px 0px rgba(86, 91, 120, 0.09);  position: absolute;  left: 5px;  top: 10px;  right: 5px;  height: 250px;">
+  <div style="font-size: 20px;  font-family: 'Hiragino Sans GB';  color: rgb(121, 125, 150);  line-height: 2;  text-align: left;  position: absolute;  left: 9.7px;  top: 5px;">
+电压电流曲线
+  </div>
+  <div style=" background-color: rgb(245, 244, 250);  position: absolute;  left: 0px;  top: 37px;  right: 0px;  height: 1px;"></div>
+</div>
+
+<div style=" border-radius: 2.5px;  background-color: rgb(255, 255, 255);  box-shadow: 0px 5px 7px 0px rgba(86, 91, 120, 0.09);  position: absolute;  left: 5px;  top: 270px;  right: 5px;  height: 250px;">
+  <div style="font-size: 20px;  font-family: 'Hiragino Sans GB';  color: rgb(121, 125, 150);  line-height: 2;  text-align: left;  position: absolute;  left: 9.7px;  top: 5px;">
+功率和功率因数曲线
+  </div>
+  <div style=" background-color: rgb(245, 244, 250);  position: absolute;  left: 0px;  top: 37px;  right: 0px;  height: 1px;"></div>
+</div>
+
+<div style=" border-radius: 2.5px;  background-color: rgb(255, 255, 255);  box-shadow: 0px 5px 7px 0px rgba(86, 91, 120, 0.09);  position: absolute;  left: 5px;  top: 530px;  right: 5px;  height: 250px;">
+  <div style="font-size: 20px;  font-family: 'Hiragino Sans GB';  color: rgb(121, 125, 150);  line-height: 2;  text-align: left;  position: absolute;  left: 9.7px;  top: 5px;">
+亮度曲线
+  </div>
+  <div style=" background-color: rgb(245, 244, 250);  position: absolute;  left: 0px;  top: 37px;  right: 0px;  height: 1px;"></div>
+</div>
+ 	</body>
+</html>

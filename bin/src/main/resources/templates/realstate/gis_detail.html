@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+    <title th:text="#{system.systemname}"></title>
+    <link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}"/>
+    <link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}"/>
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/css/ybmps.css}"/>
+    <link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/realstatefrmtab.css}"/>
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+             folder instead of downloading all of them to reduce the load. -->
+
+    <link rel="stylesheet" th:href="@{/css/_all-skins.css}"/>
+    <link rel="stylesheet" th:href="@{/css/daterangepicker.css}"/>
+    <style th:inline="text">
+        body {
+            overflow: auto;
+            font-family: "Hiragino Sans GB";
+        }
+
+        .unfinsh_state {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            line-height: 24px;
+            color: #ffffff;
+            font-size: 12px;
+            border-style: solid;
+            border-width: 0px;
+            background-color: #666666;
+            border-radius: 12px;
+        }
+
+        .finsh_state {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            line-height: 24px;
+            color: #ffffff;
+            font-size: 12px;
+            border-style: solid;
+            border-width: 0px;
+            background-color: rgb(30, 255, 30);
+            border-radius: 12px;
+        }
+
+        fieldset {
+            border: 1px solid rgb(187, 189, 202);
+            margin-top: 16px;
+            padding: 8px;
+            border-radius: 2px;
+        }
+
+        legend {
+            font-size: 14px;
+            width: auto;
+        }
+        .skin-blue .pop-title {
+        		background: #222d32;
+        		color: #fff;
+        		padding: 5px 10px 5px 15px;
+        }
+        
+        .pop-line-table{
+        		display: table;
+        		width: 100%;
+        		padding: 10px 2px 10px 2px;
+        		
+        }
+        .pop-line-row{
+        		display: table-row;
+        }
+        .pop-line-cell{
+        		display: table-cell;
+        		padding-top: 5px;
+			padding-bottom: 2px;
+        }
+        .text-blank-line{
+        		border-bottom: 1px solid #ccc;
+        }
+        
+        .text-prompt{
+        		width: 30%;
+        		text-align: center;
+        }
+        .text-value{ 
+        		width: 70%;
+        		padding-left: 2px;
+        }
+        .button-control{
+        		text-align: center;
+        		cursor: pointer;
+        }
+        .button-control img{
+        		width: 64px;
+			border: 1px solid #ccc;
+			padding: 5px 18px 5px 18px;
+			border-radius: 5px;
+        }
+        
+        .pop-box-icon{
+        		display: inline-block;
+			width: 12px;
+			height: 12px;
+			background-color: #fbeb84;
+			margin: 0px 6px 0px 12px;
+			border: 1px solid #ccc;
+        }
+        
+        .pop-box-time-val{
+	        display: inline-block;
+			text-align: right;
+			width: 80%;
+			padding-right: 20px;
+		}
+		
+		.pop-box-time{
+			padding-top: 10px;
+			padding-bottom: 10px;
+			border-top: 1px solid #ccc;
+		}
+		
+		.pop-box-data{
+			padding-top: 3px;
+			padding-bottom: 15px;
+		}
+		
+		.pop-box-data-row{
+			width: 100%;
+			padding-top: 3px;
+			padding-bottom: 5px;
+			border-top: 1px solid #ddd;
+		}
+		.pop-box-data-cell{
+			width:49%;
+			display: inline-block;
+		}
+		
+		.pop-box-data-cell .text-prompt{
+			width: 50%;
+			display: inline-block;
+			text-align: left;
+		}
+		.pop-box-data-cell .text-value{
+			font-weight: bold;
+			
+		}
+		
+    </style>
+    <script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+    <script th:src="@{/JQueryUi/jquery-ui.min.js}"></script>
+    <script th:src="@{/easyui/jquery.easyui.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/echarts.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/theme/shine.js}" type="text/javascript"></script>
+    <script th:inline="javascript" type="text/javascript">
+        /*<![CDATA[*/
+        var closecallback = null;
+		function init(){}
+        function setCallParam(param, callback) {
+            closecallback = callback;
+            console.log("gis clicked:");
+            console.log(param);
+            if (param.type == "stationinfo"){
+            		if (param.devicedata && param.devicedata.length > 0){
+            			$("#pop-ctrl-node-code").html(param.devicedata[0].code || '未知');
+            			$("#pop-ctrl-node-name").html(param.devicedata[0].devicename || '未知');
+            		}
+            		if (param.realdata && param.realdata.length > 0){
+            			for (var idx in param.realdata){
+            				var item = param.realdata[idx];
+            				switch(item.targetcode){
+            				case "051402": //主灯状态
+            					if (item.targetvalue == "1"){
+            						$("#pop-ctrl-node-status").html("亮灯");
+            					}else if (item.targetvalue == "0"){
+            						$("#pop-ctrl-node-status").html("熄灯");
+            					}else{
+            						$("#pop-ctrl-node-status").html("未知");
+            					}
+            					$("#pop-ctrl-update-time").html(item.uptime);
+            					break;
+            				case "051308": // 光亮度级别
+            					$("#pop-ctrl-node-value").html(item.targetvalue);
+            					break;
+            				case "051309": // 电压
+            					$("#pop-ctrl-node-volt").html(item.targetvalue);
+            					break;
+            				case "051310": // 电流
+            					$("#pop-ctrl-node-current").html(item.targetvalue);
+            					break;
+            				case "051311": // 功率
+            					$("#pop-ctrl-node-power").html(item.targetvalue);
+            					break;
+            				case "051312": // 功率因素
+            					$("#pop-ctrl-node-power-factor").html(item.targetvalue);
+            					break;
+            				}
+            			}
+            		}
+            }
+        }
+
+        /*]]>*/
+    </script>
+</head>
+<body onload="init();" style="background-color:#eeedf2;" class="skin-blue">
+	<div class="pop-title">
+		<span>单灯控制器</span>
+	</div>
+	<div class="pop-line-table">
+		<div class="pop-line-row">
+			<div class="pop-line-cell text-prompt">编号</div>
+			<div class="pop-line-cell text-blank-line" id="pop-ctrl-node-code">D0000</div>
+		</div>
+		<div class="pop-line-row">
+			<div class="pop-line-cell text-prompt">节点</div>
+			<div class="pop-line-cell text-blank-line text-value" id="pop-ctrl-node-name">环城路配电箱1</div>
+		</div>
+		<div class="pop-line-row">
+			<div class="pop-line-cell text-prompt">状态</div>
+			<div class="pop-line-cell text-blank-line text-value">电流异常告警</div>
+		</div>
+		<div class="pop-line-row">
+			<div class="pop-line-cell text-prompt">模式</div>
+			<div class="pop-line-cell text-blank-line text-value">节假日模式</div>
+		</div>
+	</div>
+	<div class="pop-line-table">
+		<div class="pop-line-row">
+			<div class="pop-line-cell button-control">
+				<img src="../images/control.svg"/>
+			</div>
+			<div class="pop-line-cell button-control">
+				<img src="../images/sensor.svg"/>
+			</div>
+			<div class="pop-line-cell button-control">
+				<img src="../images/video.svg"/>
+			</div>
+		</div>	
+	</div>
+	<div class="pop-box-time">
+		<span>实时数据</span>
+		<div class="pop-box-time-val">
+			<div class="pop-box-icon"></div><span id="pop-ctrl-update-time">2018-5-1 18:58:12</span>
+		</div>
+	</div>
+	<div class="pop-box-data">
+		<div class="pop-box-data-row">
+			<div class="pop-box-data-cell" style="border-right: 1px solid #ccc;">
+				<span class="text-prompt">状态</span>
+				<span class="text-value" id="pop-ctrl-node-status">亮灯</span>
+			</div>
+			<div class="pop-box-data-cell">
+				<span class="text-prompt">亮度%</span>
+				<span class="text-value" id="pop-ctrl-node-value">80%</span>
+			</div>
+		</div>
+		<div class="pop-box-data-row">
+			<div class="pop-box-data-cell" style="border-right: 1px solid #ccc;">
+				<span class="text-prompt">电压(V)</span>
+				<span class="text-value" id="pop-ctrl-node-volt">224.01</span>
+			</div>
+			<div class="pop-box-data-cell">
+				<span class="text-prompt">电流(A)</span>
+				<span class="text-value" id="pop-ctrl-node-current">0.05</span>
+			</div>
+		</div>
+		<div class="pop-box-data-row">
+			<div class="pop-box-data-cell" style="border-right: 1px solid #ccc;">
+				<span class="text-prompt">功率(W)</span>
+				<span class="text-value" id="pop-ctrl-node-power">122.01</span>
+			</div>
+			<div class="pop-box-data-cell">
+				<span class="text-prompt">功率因素</span>
+				<span class="text-value" id="pop-ctrl-node-power-factor">0.97</span>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

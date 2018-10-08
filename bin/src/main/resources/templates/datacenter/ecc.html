@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <head>
+ <!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"	name="viewport" />
+<title th:text="#{system.systemname}"></title>
+<link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/css/ybmps.css}" />
+<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+<link rel="stylesheet"  th:href="@{/css/realstatefrmtab.css}" />
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+
+<link rel="stylesheet" th:href="@{/css/_all-skins.css}" />
+<link rel="stylesheet" th:href="@{/css/daterangepicker.css}" />
+<style th:inline="text">
+ body { overflow:auto;font-family: "Hiragino Sans GB"; }
+ 
+ </style>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/JQueryUi/jquery-ui.min.js}"></script>
+<script th:src="@{/easyui/jquery.easyui.min.js}"></script>	
+<script th:src="@{/js/moment.js}"></script>
+<script  th:src="@{/js/daterangepicker.js}"></script>
+<script  th:src="@{/js/bootstrap.min.js}"></script>
+
+<script type="text/javascript"  th:src="@{/js/jquery.dataTables.js}"></script>
+<script type="text/javascript"  th:src="@{/js/RobotJs.js}"></script>
+<script type="text/javascript"  th:src="@{/js/compent/RobotPageBar.js}"></script>
+<script  th:src="@{/js/echarts.min.js}" type="text/javascript"></script>
+<script  th:src="@{/js/theme/shine.js}" type="text/javascript"></script>
+<script th:inline="javascript" type="text/javascript">
+	/*<![CDATA[*/
+function refreshstation(stationid,stationname,areaid,areaname){
+ 
+	$("#var_node_name").html(stationname);
+
+}
+function refresharea(areaid,areaname){
+
+ 
+}
+var realwarndatamd5=null;
+var jobid=0;
+var columns=[{data:"rownum", "render": function ( data, type, full, meta ) {  
+    return '<input type="checkbox" name="ckrow" value="'+full.stationid+'" onchange="refreshbtnstate()"/>';  
+}  }
+,{data:"devicename"},{data:"netstate"},{data:"uptime"},{data:"loop1state"},{data:"loop2state"},{data:"loop3state"},{data:"loop4state"},{data:"loop5state"},{data:"loop6state"},{data:"doorstate"}];
+
+function init(){
+	RobotPageBar.refreshdata=QueryEccRealData;
+	$("#pagebardiv").append(RobotPageBar.getHtml());
+	var grid=$("#datagrid");
+	grid.dataTable({
+"sScrollX":"auto",
+"sScrollY":"auto",
+"bScrollInfinite":false,
+"bScrollCollapse": true, 
+"bPaginate" : false, // 翻页功能
+"bStateSave" : false, // 状态保存
+"bLengthChange" : false, // 改变每页显示数据数量
+"bFilter" : false, // 过滤功能
+"bSort" : false, // 排序功能
+"bInfo" : false, // 页脚信息
+"bAutoWidth" : true,// 自动宽度
+"bDestroy" : true,
+"oLanguage": {
+"sProcessing": "正在加载中......",
+"sLengthMenu": "每页显示 _MENU_ 条记录",
+"sZeroRecords": "对不起，查询不到相关数据！",
+"sEmptyTable": "暂无集中器数据！",
+"sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录",
+"sInfoFiltered": "数据表中共为 _MAX_ 条记录",
+"sSearch": "搜索"
+}, //多语言配置
+"fnDrawCallback": function( oSettings ) {
+	if ($('td.dataTables_empty').length == 1 && 
+			oSettings.json != undefined && oSettings.json.DATA.length == 0){
+		$('td.dataTables_empty').html(
+		'<img src="images/ok.png" style="height: 100px; width: auto;"/><br/>' +
+		'<span>一切正常</span>'
+		)
+	}
+},
+"columns" :columns,
+"columnDefs": [{targets:[null]}]
+
+});
+
+	QueryEccRealData();
+}
+
+function QueryEccRealData(){
+	robotservice.callrobotservice("DeviceService","QueryDeviceRealState",{"md5":realwarndatamd5,"devicetype":"5101",pageindex:RobotPageBar.pageIndex,pagesize:RobotPageBar.pageSize},showQueryEccRealData,this,false);			 
+}
+function showQueryEccRealData(data,callobj){
+if(data!=null){
+	//realwarndatamd5=data.md5;
+	RobotPageBar.recordcount=data.RecordCount;
+RobotPageBar.pageIndex=data.pageIndex;
+RobotPageBar.pageSize=data.pageSize;
+RobotPageBar.refreshstatu();
+	var grid=$("#datagrid");
+	var datatable=grid.dataTable();
+	datatable.fnClearTable();
+	for(var i=1;i<=data.rs.length;i++){
+		data.rs[i-1]["rownum"]=i;
+		for(var j=0;j<columns.length;j++){
+			if(data.rs[i-1][columns[j].data]==undefined){
+				data.rs[i-1][columns[j].data]="---";
+			}
+		}
+	}
+	if(data.rs.length>0){
+		datatable.fnAddData(data.rs,true);
+		}
+}else{
+	RobotPageBar.recordcount=0;
+	RobotPageBar.pageIndex=1;
+	RobotPageBar.refreshstatu();
+}
+}
+function add_ecc(){
+	RobotComm.showPopUpWindow("datacenter/ecc_add.html","新增集中器",{width:800,height:600},function (){
+		QueryEccRealData();
+	});
+}
+function edit_ecc(){
+	RobotComm.showPopUpWindow("datacenter/ecc_add.html","修改集中器",{width:800,height:600},function (){
+		QueryEccRealData();
+	});
+}
+function del_ecc(){
+	var r=confirm("确认要删除选中的集中器吗");
+}
+function open_loop(){
+	var lampid=getselectedrow();
+	if(lampid==""){
+		alert("请勾选要控制的集中器！");
+		return;
+	}
+	var r=confirm("确认要打开选中的集中器下面相应的回路吗");
+	if(r){
+		robotservice.callrobotservice("SmartLightService","sendControlCommand",{"lampid":lampid,"command":"loopon","value":getselectedloop()},showCommandInfo,this,false);			 
+		
+	}
+
+}
+function close_loop(){
+	var lampid=getselectedrow();
+	if(lampid==""){
+		alert("请勾选要控制的集中器！");
+		return;
+	}
+	var r=confirm("确认要关闭选中的集中器下面相应的回路吗");
+	if(r){
+		robotservice.callrobotservice("SmartLightService","sendControlCommand",{"lampid":lampid,"command":"loopoff","value":getselectedloop()},showCommandInfo,this,false);			 
+		
+	}
+	 
+}
+function getselectedrow(){
+	var str=""; 
+	$("[name='ckrow']").each(function(){
+		if($(this).prop("checked")){
+			str+=$(this).val()+","; 
+		}
+	
+	//alert($(this).val()); 
+	}) ;
+	if(str.length>0){
+		str=str.substr(0,str.length-1);
+	}
+	
+	return str;
+}
+function getselectedloop(){
+	var str=""; 
+	$("[name='select_loop']").each(function(){
+		if($(this).prop("checked")){
+			str+=$(this).val()+","; 
+		}
+	
+	//alert($(this).val()); 
+	}) ;
+	if(str.length>0){
+		str=str.substr(0,str.length-1);
+	}
+	
+	return str;
+}
+function showCommandInfo(data,callobj){
+	if(data.result=="ok"){
+		alert("命令发送成功！请10秒后再刷新数据！");
+	}else{
+		alert("命令发送失败!"+data.result);
+	}
+}
+function selectall(){
+	var isselected=$("#ck_selectall").prop("checked");
+		$("[name='ckrow']").each(function(){
+			$(this).prop("checked",isselected);
+		}) ;
+}
+function refreshbtnstate(){
+	//根据记录刷新按钮状态
+	var str=getselectedrow();
+	if(str.length<1){
+		$(".needselectrow").attr("disabled","disabled");
+		$(".selectonerow").attr("disabled","disabled");
+	}else{
+		if(str.indexOf(",")>0){
+			$(".selectonerow").attr("disabled","disabled");
+		}else{
+			$(".selectonerow").removeAttr("disabled");
+		}
+		$(".needselectrow").removeAttr("disabled");
+	}
+	
+}
+/*]]>*/
+</script>
+</head>
+<body  onload="init();" style="background-color:#eeedf2;">
+<img id="progressImgage" class="ajaxprogress" style="display:none" alt="" th:src="@{/images/ajax-loader.gif}"/> 
+<div id="maskOfProgressImage" class="ajaxmask" style="display:none"></div> 
+<div style='position: absolute;background-color:#ffffff;margin:0px;top:5px;height:42px;right:5px;left:5px;overflow: auto;min-width:1060px'>
+<div style="position: absolute;top:1px;bottom:1px;left:0px;width:232px;border-width: 1px;border-style: solid; border-color: rgb(187, 189, 202);  border-radius: 4.5px;">
+<button onclick="add_ecc();"  class="btn" type="button" style="position: absolute;top:2px;left:7px"><i class="glyphicon glyphicon-plus"></i>新增</button>
+<button onclick="edit_ecc();"  class="btn selectonerow" type="button" style="position: absolute;top:2px;left:80px"><i class="glyphicon glyphicon-pencil"></i>修改</button>
+<button onclick="del_ecc();"  class="btn selectonerow" type="button" style="position: absolute;top:2px;left:152px"><i class="glyphicon glyphicon-trash"></i>删除</button>
+</div>
+<div style="position: absolute;top:1px;bottom:1px;left:234px;width:570px;border-width: 1px;border-style: solid; border-color: rgb(187, 189, 202);  border-radius: 4.5px;">
+<div class="checkbox-custom checkbox-default" style="position: absolute;top:7px;left:10px">
+  <input type="checkbox" id="c_loop1" name="select_loop" value="1" />
+  <label for="c_loop1">回路1</label>
+</div>
+<div class="checkbox-custom checkbox-default" style="position: absolute;top:7px;left:80px">
+  <input type="checkbox" id="c_loop2"  name="select_loop" value="2" />
+  <label for="c_loop2">回路2</label>
+</div>
+<div class="checkbox-custom checkbox-default" style="position: absolute;top:7px;left:150px">
+  <input type="checkbox" id="c_loop3"  name="select_loop"  value="3" />
+  <label for="c_loop3">回路3</label>
+</div>
+<div class="checkbox-custom checkbox-default" style="position: absolute;top:7px;left:220px">
+  <input type="checkbox" id="c_loop4"  name="select_loop"  value="4" />
+  <label for="c_loop4">回路4</label>
+</div>
+<div class="checkbox-custom checkbox-default" style="position: absolute;top:7px;left:290px">
+  <input type="checkbox" id="c_loop5"  name="select_loop"  value="5" />
+  <label for="c_loop5">回路5</label>
+</div>
+<div class="checkbox-custom checkbox-default" style="position: absolute;top:7px;left:360px">
+  <input type="checkbox" id="c_loop6"  name="select_loop"  value="6" />
+  <label for="c_loop6">回路6</label>
+</div>
+
+<button onclick="open_loop();"  class="btn selectonerow" type="button" style="position: absolute;top:2px;left:430px"><img th:src="@{/images/lamp/btn_onlamp.png}" width="14" height="14"></img>开</button>
+<button onclick="close_loop();" class="btn selectonerow" type="button" style="position: absolute;top:2px;left:500px"><img th:src="@{/images/lamp/btn_offlamp.png}" width="14" height="14"></img>关</button>
+</div>
+<button  class="btn" type="button" style="position: absolute;top:5px;right:248px"><i class="glyphicon glyphicon-filter"></i>过滤</button>
+<button  class="btn" type="button" style="position: absolute;top:5px;right:150px"><i class="glyphicon glyphicon-list"></i>历史数据</button>
+<button onclick="QueryEccRealData();"  class="btn" type="button" style="position: absolute;top:5px;right:80px"><i class="glyphicon glyphicon-refresh"></i>刷新</button>
+<button  class="btn" type="button" style="position: absolute;top:5px;right:10px"><i class="glyphicon glyphicon-floppy-save"></i>导出</button>
+</div> 
+ 
+<div style='position: absolute;background-color:#ffffff;margin:0px;top:50px;bottom:30px;right:5px;left:5px;overflow: auto;min-width:1060px' >
+<table id="datagrid" class='table table-striped table-hover table-bordered table-condensed' style='table-layout:fixed;margin:0px;top:0px;bottom:0px;right:0px;left:0px;width:100%'     border='1'>
+<thead>
+				<tr >
+						<th width="20"><input type="checkbox" id="ck_selectall" onchange="selectall();" /></th>
+						<th width="120">集中器</th>
+						<th width="80">联网状态</th>
+						<th width="140">时间</th>
+						<th width="80">回路1状态</th>
+						 <th width="80">回路2状态</th>
+						<th width="80">回路3状态</th>
+						<th width="80">回路4状态</th>
+						<th width="80">回路5状态</th>
+						<th width="80">回路6状态</th>
+						<th width="80">防盗箱状态</th>
+					</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+<div id="pagebardiv" style="position:absolute;bottom:1px;left:2px;right:2px">
+</div>
+ 	</body>
+</html>

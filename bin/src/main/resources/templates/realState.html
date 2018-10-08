@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <head>
+ <!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"	name="viewport" />
+<title th:text="#{system.systemname}"></title>
+<link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/css/ybmps.css}" />
+<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+<link rel="stylesheet"  th:href="@{/css/realstatefrmtab.css}" />
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+
+<link rel="stylesheet" th:href="@{/css/_all-skins.css}" />
+<link rel="stylesheet" th:href="@{/css/daterangepicker.css}" />
+<style>
+ body { overflow:auto; }
+ .togglereduce_button_div{
+ background-color: rgb(209, 209, 209);width: 7px;height: 300px;position: absolute;top: 50%; transform: translateY(-50%);left:0px
+ }
+ .toggleexpend_button_div{
+ background-color: rgb(209, 209, 209);width: 7px;height: 300px;position: absolute;top: 50%; transform: translateY(-50%);right:0px
+ }
+ .toggleexpand_icon{
+ left:-3px;border-width: 4px;border-style: solid;border-color: transparent rgb(86, 91, 120) transparent transparent ;width: 0px;height: 0px;position: absolute;top: 50%; transform: translateY(-50%);
+ }
+ .togglereduce_icon{
+ left:3px;border-width: 4px;border-style: solid;border-color: transparent  transparent transparent rgb(86, 91, 120);width: 0px;height: 0px;position: absolute;top: 50%; transform: translateY(-50%);
+ }
+ .lefttoggleexppand{
+ width:260px
+ }
+ .lefttogglereduce{
+ width:10px
+ }
+  .righttoggleexppand{
+ left:261px
+ }
+ .righttogglereduce{
+ left:11px
+ }
+ </style>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/JQueryUi/jquery-ui.min.js}"></script>
+<script th:src="@{/easyui/jquery.easyui.min.js}"></script>	
+<script th:src="@{/js/moment.js}"></script>
+<script  th:src="@{/js/daterangepicker.js}"></script>
+<script  th:src="@{/js/bootstrap.min.js}"></script>
+<script  th:src="@{/js/robotservice.js}" type="text/javascript"></script>
+<script type="text/javascript"  th:src="@{/js/jquery.dataTables.js}"></script>
+<script type="text/javascript"  th:src="@{/js/RobotComm.js}"></script>
+<script type="text/javascript"  th:src="@{/js/compent/RobotAreaStationTree.js}"></script>
+<script type="text/javascript"  th:src="@{/js/py.js}"></script>
+
+<script  th:src="@{/js/echarts.min.js}" type="text/javascript"></script>
+<script  th:src="@{/js/theme/shine.js}" type="text/javascript"></script>
+<script th:inline="javascript" type="text/javascript">
+	/*<![CDATA[*/
+var SingnalInfoDivHeight=0;
+	var s_stationid=null;
+	var s_stationname=null;
+	var s_areaid=null;
+	var s_areaname=null;
+$().ready(function(){
+$("#stationtreediv").height($(window).height()-14);
+robotservice.robotuserid=/*[[${session.userid}]]*/null;
+robotservice.robotdisplayname=/*[[${session.displayname}]]*/null;
+robotservice.robotusername=/*[[${session.username}]]*/null;
+robotservice.loginPage=/*[[#{LoginPage}]]*/./login.html;
+robotservice.baseurl= /*[[@{/}]]*/ '';
+if(	robotservice.robotuserid==null){
+  window.location.href=robotservice.loginPage;
+}
+RobotAreaStationTree.init($("#stationtreediv"));
+
+RobotAreaStationTree.listenObjs[ RobotAreaStationTree.listenObjs.length]=MyCompent;
+
+});
+
+
+$(function() {
+	$(document).on(
+			"click",
+			"#div_toggle_button",
+			function() {
+				f_toggle();
+			});
+	$(document).on("click", "#nav_title_list li", function() {
+		var bStopIndex = $(this).index();
+		var liobj= $(this)[0].dataset;
+		
+		var iframe_box = $("#iframe_box");
+		$("#nav_title_list li").removeClass("active").eq(bStopIndex).addClass("active");
+		//iframe_box.find(".show_iframe").hide().eq(bStopIndex).show();
+		creatIframe(liobj.href,liobj.id,"");
+		localStorage.setItem("lastaccesstab",bStopIndex);
+	});
+});
+ 
+function f_toggle(){
+	var div_toggle_button = $("#div_toggle_button");
+	var obj=$(document).find(".lefttoggleexppand");
+	if(obj.length==1){
+		$(document).find(".lefttoggleexppand").removeClass("lefttoggleexppand").addClass("lefttogglereduce");
+		$(document).find(".righttoggleexppand").removeClass("righttoggleexppand").addClass("righttogglereduce");	
+	}else{
+		$(document).find(".lefttogglereduce").removeClass("lefttogglereduce").addClass("lefttoggleexppand");
+		$(document).find(".righttogglereduce").removeClass("righttogglereduce").addClass("righttoggleexppand");
+	}
+	if(div_toggle_button.hasClass("toggleexpend_button_div")){
+		div_toggle_button.removeClass("toggleexpend_button_div").addClass("togglereduce_button_div");
+	}else{
+		div_toggle_button.removeClass("togglereduce_button_div").addClass("toggleexpend_button_div");
+	}
+	var div_toggle_icon = $("#div_toggle_icon");
+	if(div_toggle_icon.hasClass("toggleexpand_icon")){
+		div_toggle_icon.removeClass("toggleexpand_icon").addClass("togglereduce_icon");
+	}else{
+		div_toggle_icon.removeClass("togglereduce_icon").addClass("toggleexpand_icon");
+	}
+
+	
+}
+/*创建iframe*/
+function creatIframe(href, llid, titleName) {
+   var topWindow = $(document);
+     //   show_nav = topWindow.find('#min_title_list'),
+    var   iframe_box=topWindow.find('#view_iframe_box');
+ var iframe=topWindow.find("#view_iframe_"+llid);
+ if(iframe.length==0){
+	 iframe_box.find(".show_iframe").hide();
+	iframe_box.append('<div class="show_iframe" id="div_show_iframe_'+llid+'"><iframe id="view_iframe_'+llid+'" frameborder="0" src='+href+'></iframe></div>');
+ }else{
+	 iframe_box.find(".show_iframe").hide();
+	 iframe_box.find("#div_show_iframe_"+llid).show();
+	 cur_showiframe=topWindow.find("#view_iframe_"+llid);
+	 if(s_stationid!=null){
+			MyCompent.refreshstation(s_stationid,s_stationname,s_areaid,s_areaname);
+		}else if(s_areaid!=null){
+			MyCompent.refresharea(s_areaid,s_areaname);
+		}
+ }
+ cur_showiframe=topWindow.find("#view_iframe_"+llid);
+
+	//setIframeHeight(iframe_box);
+    /*
+	var showBox = iframe_box.find('.show_iframe:visible');
+    showBox.find('iframe').load(function() {
+        //	showBox.find('.loading').hide();
+    });
+	*/
+	iframe_box.find('iframe').load(function() {
+		if(s_stationid!=null){
+			MyCompent.refreshstation(s_stationid,s_stationname,s_areaid,s_areaname);
+		}else if(s_areaid!=null){
+			MyCompent.refresharea(s_areaid,s_areaname);
+		}
+ });
+}
+var cur_showiframe=null;
+function MyCompent(){
+	   this.value='';
+
+};
+MyCompent.refreshstation=function(stationid,stationname,areaid,areaname){
+	s_stationid=stationid;
+	s_stationname=stationname;
+	s_areaid=areaid;
+	s_areaname=areaname;
+	if(cur_showiframe!=null){
+		cur_showiframe[0].contentWindow.refreshstation(stationid,stationname,areaid,areaname);
+	}
+ 
+}
+MyCompent.refresharea=function( areaid,areaname){
+	s_stationid=null;
+	s_stationname=null;
+	s_areaid=areaid;
+	s_areaname=areaname;
+	if(cur_showiframe!=null){
+		cur_showiframe[0].contentWindow.refresharea( areaid,areaname);
+	}
+ 
+}
+function init(){
+	var bStopIndex=localStorage.getItem("lastaccesstab");
+	if(bStopIndex!=null){
+	$("#nav_title_list li").eq(bStopIndex).trigger("click");
+	}
+}
+/*]]>*/
+</script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini" onload="init();" style="background-color:#ecf0f5;">
+<img id="progressImgage" class="ajaxprogress" style="display:none" alt="" th:src="@{/images/ajax-loader.gif}"/> 
+<div id="maskOfProgressImage" class="ajaxmask" style="display:none"></div> 
+	<div class="lefttoggleexppand" style="position:absolute;left: 1px;top: 2px;overflow:hidden;bottom: 2px;">
+	<div class="col-md-12 col-xs-12 span3" id="stationtreediv" style="overflow:auto;">
+	</div>
+	
+	<div id="div_toggle_button" class="toggleexpend_button_div">
+	  <div style="background-color: rgb(251, 252, 255);width: 7px;height: 50px;position: absolute;top: 50%; transform: translateY(-50%);">
+	     <div id="div_toggle_icon" class="toggleexpand_icon">
+	     </div>
+	  </div>
+	</div>
+	</div>
+	 <div class="righttoggleexppand" style="position: absolute;right: 0px;top: 0px; bottom: 0px;">
+<section class="Hui-article-box">
+    <div id="Hui-tabNav" class="Hui-tabNav">
+        <div class="Hui-tabNav-wp">
+        <ul id="nav_title_list" class="acrossTab cl" style="padding-left: 6px;">
+          <li data-id="1" data-href="realstate/gis.html" class="active"><span data-href="">GIS</span><em></em></li>
+          <li data-id="2" data-href="realstate/configure.html" ><span data-href="">组态</span><em></em></li> 
+          <li data-id="3" data-href="realstate/data.html" ><span data-href="">数据</span><em></em></li>
+          <li data-id="4" data-href="realstate/chart.html" ><span data-href="">图表</span><em></em></li>  
+         
+        </ul>
+        </div>
+
+    </div>
+    <div id="view_iframe_box" style="position: absolute;top:34px;bottom:0;left:0; right:0;overflow:auto">
+           
+    </div>
+</section>
+	</div>
+
+ 	</body>
+</html>

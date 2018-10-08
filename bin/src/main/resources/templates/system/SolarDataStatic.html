@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" >
+<!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="#{system.systemname}"></title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+    <link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/bootstrap-treeview.min.css}" />
+	<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+ 	<link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/ybmps.css}" />
+	<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/_all-skins.css}" />
+	<script th:src="@{/jQuery/jQuery-2.1.4.min.js}"></script>
+	<script th:src="@{/js/bootstrap-treeview.min.js}"></script>
+	<script th:src="@{/easyui/jquery.easyui.min.js}"></script>
+	<script th:src="@{/js/bootstrap.min.js}"></script>	
+	<script th:src="@{/js/app.js}"></script>
+	<script th:src="@{/js/RobotComm.js}"></script>
+	<script th:src="@{/js/robotservice.js}" type="text/javascript"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.dataTables.js}"></script>
+    <script th:src="@{/js/echarts-all.js}" type="text/javascript"></script>
+    
+    </head>
+   <script th:inline="javascript" >
+   /*<![CDATA[*/
+
+   function init(){
+   	robotservice.loginPage=/*[[@{/}+#{LoginPage}]]*/"../login.html";
+   	var grid=$("#datagrid");
+   	grid.dataTable({
+   				"sScrollX":"auto",
+   		 "sScrollY":$(document).height()-80,
+   		 "bScrollInfinite":true,//是否开启内置滚动条
+   	   "bScrollCollapse": true, 
+   	  "bPaginate" : false, // 翻页功能
+   	"bStateSave" : false, // 状态保存
+   	"bLengthChange" : false, // 改变每页显示数据数量
+   	"bFilter" : false, // 过滤功能
+   	"bSort" : true, // 排序功能
+   	"bInfo" : false, // 页脚信息
+   	"bAutoWidth" : true,// 自动宽度
+   	"bDestroy" : true,
+   	"searching": true,
+   	  "oLanguage": {
+   	                    "sProcessing": "正在加载中......",
+   	                    "sZeroRecords": "对不起，查询不到相关数据！",
+   	                    "sEmptyTable": "表中无数据存在！"
+   	                }, //多语言配置
+   	"columns":[{data:"checked"},{data:"rownumber"},{data:"stationname"},{data:"devicename"},{data:"sequencecode"},{data:"ip"},{data:"port"},{data:"comport"},{data:"devicetype"},{data:"iscontrol"},{data:"proctocelid"},{data:"deviceseq"},{data:"uptime"},{data:"step1"}],
+   	"columnDefs":[{targets:[0],"render": function(data, type, full) {
+
+   				  var htmlstr="<input type='checkbox' onchange='Fchangeset(this,\"ispowerdown\");' "+(full.checked==1?"checked='checked'":"")+">";
+   				   
+   					htmlstr+="</input>";
+   	            return htmlstr;
+   	        }},{targets:[9],"render": function(data, type, full) {
+
+   				  var htmlstr=full.iscontrol==1?"已接入":"未接入";
+   	            return htmlstr;
+   	        }} ]
+   			});
+   	 		grid.on('click', 'tr', function (e) {
+   	    gridselect= grid.dataTable().fnGetData( this ); 
+   	    $(this).siblings('.selected').removeClass('selected');
+   	     $(this).addClass('selected'); // add selected row
+   	// $("#btn_sendtest").attr("disabled",null);
+   	//  $("#btn_guess").attr("disabled",null);
+   	   });
+   
+   	QueryData(); 
+  }
+  function QueryData(){
+	   selectedrow=null;
+	   showbtnstate();
+		robotservice.callrobotservice("SolarDataAnalyseService","PageQueryStaticList",{}, refreshdata,this,true);
+
+  }
+  function fshowdata(data,callobj){
+		var grid=$("#datagrid");
+		var datatable=grid.dataTable();
+	try{
+		datatable.fnClearTable();
+	}catch(e){
+
+	}
+
+			if(data!=null){
+
+	 for (var i = 0; i < data.length; i++) {
+	 var itemobj=data[i];
+	 itemobj.rownumber=i+1;
+	 itemobj.checked=0;
+	 	datatable.fnAddData(itemobj,false);
+	 }
+	grid.fnDraw();
+	
+} 
+
+	}
+  function exportData(){
+	   selectedrow=null;
+	   showbtnstate();
+		robotservice.callrobotservice("SolarDataAnalyseService","ExportStaticList",{}, fshowexportdata,this,true);
+
+ }
+  function fshowexportdata(data,callobj){
+		if(data!=null){
+		RobotComm.showDownLoadWindow(data.result);
+		}
+	}
+   	 /*]]>*/  
+   </script>
+    
+    <body class="hold-transition skin-blue sidebar-mini"  onload="init()" >
+    	<img id="progressImgage" class="ajaxprogress" style="display:none" alt="" src="../images/ajax-loader.gif"/> 
+<div id="maskOfProgressImage" class="ajaxmask" style="display:none"></div> 
+
+ <div style="position: absolute;left: 1px;right: 0px;top: 2px; height: 30px;">
+		<div class="btn-toolbar" role="toolbar">
+ <div class="btn-group"> 
+  <button id="btn_refresh" type="button" class="btn btn-primary btn-sm" onclick="QueryData();" ><i class="glyphicon glyphicon-refresh" ></i><font th:text="#{刷新}">刷新</font></button>
+  <button id="btn_export" type="button" class="btn btn-primary btn-sm" onclick="exportData();"  ><i class="glyphicon glyphicon-plus-export" ></i><font th:text="#{导出}">导出</font></button> 
+ </div> 
+ </div>
+ </div>
+  <div  style="position: absolute;left: 1px;right: 0px;top: 35px; bottom: 0px;overflow: auto;">
+    		<table id="datagrid"  class="table table-bordered table-hover display" border="1"  style="width: 100%;height:100%;margin:0px;padding:0px;table-layout:fixed">
+   	<thead style="color: #ECF0F1; background: rgba(52, 73, 94, 0.94);">
+ 		<tr class="theader">
+ 		<th width="30"><input type="checkbox"></th>	
+ 		<th width="30">序号</th>
+ 		<th width="30">时间</th>		
+ 		<th width="80">项目</th>
+ 		<th width="180">路灯</th>
+ 		<th width="40">电池最高电压</th>
+ 		<th width="80">达到最高电压的时间</th>
+ 		<th width="50">电池最低电压</th>
+ 	    <th width="30">达到电池电压最低时间</th>
+  		<th width="30">输出负载最高电压</th>
+  		<th width="30">开灯时间</th>
+  		<th width="60">关灯时间</th>
+  		<th width="80">亮灯时长</th>
+  		<th width="180">网络状态</th>
+  		<th width="280">最新充满电压设置值</th>
+  		<th width="280">最新充满电压设置值时间</th>
+  		<th width="280">最新关断电压设置值</th>
+  		<th width="280">最新关断电压设置值时间</th>
+  		<th width="280">电池组数</th>
+  		<th width="280">最高容量</th>
+  		<th width="280">最低容量</th>
+  		<th width="280">城市</th>
+  		<th width="280">日出</th>
+  		<th width="280">日落</th>
+  		<th width="280">天气</th>
+  		<th width="280">光照时长</th>
+  		<th width="280">备注</th>
+  		
+ 		</tr>
+ 	</thead>
+ 	<tbody></tbody>
+    		</table>
+</div>
+
+
+         
+ 	</body>
+</html>

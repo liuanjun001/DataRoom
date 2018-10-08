@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport" />
+<title th:text="#{system.systemname}"></title>
+<link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/css/ybmps.css}" />
+<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+<link rel="stylesheet" th:href="@{/css/realstatefrmtab.css}" />
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+
+<link rel="stylesheet" th:href="@{/css/_all-skins.css}" />
+<link rel="stylesheet" th:href="@{/css/daterangepicker.css}" />
+<style type="text/css">
+html {
+	height: 100%
+}
+
+body {
+	height: 100%;
+	margin: 0px;
+	padding: 0px
+}
+
+#map {
+	height: 100%
+}
+.box-hidden{
+	display: none;
+}
+</style>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/JQueryUi/jquery-ui.min.js}"></script>
+<script th:src="@{/easyui/jquery.easyui.min.js}"></script>
+<script th:src="@{/js/moment.js}"></script>
+<script th:src="@{/js/daterangepicker.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+<script type="text/javascript" th:src="@{/js/jquery.dataTables.js}"></script>
+<script type="text/javascript" th:src="@{/js/RobotJs.js}"></script>
+<script type="text/javascript"
+	th:src="@{http://api.map.baidu.com/api?v=3.0&amp;ak=rAY6tETc3GHhsZrK8OugzVqclNsYolOT}"></script>
+<script type="text/javascript"
+	src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+<script type="text/javascript" th:src="@{/js/MarkerClusterer_min.js}"></script>
+
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+var contextpath=/*[[@{/}]]*/:"";
+var shownodeid="-1";
+var node_id=null;
+var areaid=null;
+var isaddMapControl=false;
+function refreshstation(stationid,stationname,areaid,areaname){
+	if(!isaddMapControl){
+		addMapControl();
+		isaddMapControl=true;
+	}
+	areaid=areaid;
+	var areadata=queryobj(stationid,stationtreedata);
+	if(areadata.children==null){
+		showNodeInfo(areadata);
+	}else{
+		showAreaInfo(areadata);
+	}
+}
+function refresharea(areaid,areaname){
+	if(!isaddMapControl){
+		addMapControl();
+		isaddMapControl=true;
+	}
+	areaid=areaid;
+ 	var areadata=queryobj(areaid,stationtreedata);
+ 	//alert(areaid+","+areaname+","+areadata.children.length);
+	if(areadata.children==null){
+		showNodeInfo(areadata);
+	}else{
+		showAreaInfo(areadata);
+	}
+}
+function showAreaInfo(areadata){
+
+	isbrowsedetail=true;
+	map.clearOverlays();        //清除地图覆盖物  
+	var markers = [];
+	var pointArray2 = new Array();
+	var icount=0;
+	showmarker=null;
+	var data=areadata.children;
+ 	$.each(data, function(i, item) {
+		// 将标注添加到地图中
+		if (item.longitude!=0&&item.latitude!=0){
+	
+			var point = new BMap.Point( item.longitude,item.latitude);
+			// alert(item.longitude+","+item.latitude);
+			pointArray2 =pointArray2.concat(new BMap.Point( item.longitude,item.latitude));
+			icount++;
+			var marker = new BMap.Marker(point);  // 创建标注
+			var label = new BMap.Label(item.node_name,{ offset:new BMap.Size(0,20)});
+			var myIcon = new BMap.Icon(contextpath+"img/"+item.node_type+"normal.png", new BMap.Size(32,32));
+			label.setStyle({color:"black",border:"0px", fontSize : "12px"});
+			if(item.warnlevel>0){
+				//如果存在告警则用告警图标
+				myIcon = new BMap.Icon(contextpath+"img/"+item.node_type+"warn.png", new BMap.Size(32,32));
+				label.setStyle({color:"red",border:"0px", fontSize : "12px"});
+			}
+		
+		 
+			marker.setLabel(label);
+			marker.setIcon(myIcon);
+			marker.setShadow(myIcon);
+			item.areaid=areadata.node_id;
+			marker.data=item;
+			marker.addEventListener("click",attribute);
+			markers.push(marker);
+			if(item.warncn>0){
+				marker.setTitle("告警:"+item.warncn+"条,最高告警级别:"+item.warnlevel+"级");
+			}else{
+				marker.setTitle("无告警");  
+			}
+			map.addOverlay(marker);
+			if(showmarker==null){
+				showmarker= marker;
+			}
+			if(shownodeid!="-1"&&shownodeid==item.node_id){
+				showmarker= marker;
+			}
+		}
+  			});
+
+	if(showmarker!=null){
+		//map.setCenter(showmarker.getPosition());
+		map.centerAndZoom(showmarker.getPosition(),18);
+		showmarker.setTop(true);
+		//showmarker.setAnimation(BMAP_ANIMATION_BOUNCE);
+	}
+	map.setViewport(pointArray2);
+	$('.anchorBL').remove();
+}
+function showNodeInfo(item){
+	
+}
+function queryobj(nodeid,treedata){
+	for (var i=0;i<treedata.length;i++){
+		if(treedata[i].node_id==nodeid){
+			return treedata[i];
+		}else{
+			if(treedata[i].children!=null){
+				var ret=queryobj(nodeid,treedata[i].children);
+				if(ret!=null){
+					return ret;
+				}
+			}
+		}
+	}
+	return null;
+}
+
+// global variants
+var stationtreedata={};
+var map;//Map变量
+
+var isbrowsedetail=false;
+var navControl ;
+var overviewControl ;
+var scaleControl;
+var markerClusterer;
+var pointArray =  new Array();
+
+function initMap(){
+	stationtreedata=JSON.parse(localStorage.getItem("stationtreedata"));	
+    createMap();//创建地图
+   
+     setMapEvent();//设置地图事件
+  //  addMapControl();//向地图添加控件
+ 
+	 
+	 //  map.setViewport(pointArray);    //调整视野 
+	 // getBoundary2();
+    
+}
+function setMapEvent(){
+	map.enableScrollWheelZoom();
+	map.enableKeyboard();
+	map.enableDragging();
+	map.enableDoubleClickZoom()
+}
+//生成地图
+function createMap(){ 
+	map = new BMap.Map("map"); 
+//  changemapstyle();
+}
+//向地图添加控件
+function addMapControl(){
+	map.setCurrentCity(stationtreedata[0].node_name); 
+    scaleControl = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+	scaleControl.setUnit(BMAP_UNIT_IMPERIAL);
+	map.addControl(scaleControl);
+    navControl = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_LARGE});
+	map.addControl(navControl);
+    map.addControl(new BMap.OverviewMapControl());
+    overviewControl = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:true});
+	map.addControl(overviewControl);
+	map.addControl(new BMap.MapTypeControl());   
+ 	map.enableScrollWheelZoom();
+ 	map.enableKeyboard();
+	map.enableDragging();
+	map.enableDoubleClickZoom()
+}
+/**生成地图**/
+function changemapstyle(){
+
+	map.enableScrollWheelZoom();
+	map.enableKeyboard();
+	map.enableDragging();
+	map.enableDoubleClickZoom()
+	map.addEventListener("zoomend",domapresize);	
+/*	 map.setMapStyle({
+	   	  styleJson:[
+	   	        {
+	                   "featureType": "poi",
+	                   "elementType": "all",
+	                   "stylers": {
+	                             "color": "#ffffff",
+	                             "visibility": "on"
+	                   }
+			         },
+			         {
+			                   "featureType": "road",
+			                   "elementType": "all",
+			                   "stylers": {
+			                             
+			                             "visibility": "on"
+			                   }
+			         },
+					 {
+			                   "featureType": "water",
+			                   "elementType": "all",
+			                   "stylers": {
+			                             
+			                             "visibility": "on"
+			                   }
+			         },
+					 {
+			                   "featureType": "land",
+			                   "elementType": "all",
+			                   "stylers": {
+			                             
+			                             "visibility": "on"
+			                   }
+			         },
+					 {
+			                   "featureType": "building",
+			                   "elementType": "all",
+			                   "stylers": {
+			                             
+			                             "visibility": "on"
+			                   }
+			         },
+			         {
+			                   "featureType": "background",
+			                   "elementType": "all",
+			                   "stylers": {
+			                             "color": "#ffffff"
+			                   }
+			         },
+			         {
+			                   "featureType": "administrative",
+			                   "elementType": "all",
+			                   "stylers": {
+			                             "color": "#ffffff",
+			                             "visibility": "on"
+			                   }
+			         }
+				]
+	});	*/
+	
+
+}//~changemapstyle
+var showmarker=null;
+//显示路灯信息
+var firstquery=false;
+//获取覆盖物位置
+function attribute(e){
+	lastclicktime= new Date();//设置操作时间，以防止在操作时，进行数据加载
+	var p = e.target;
+	showmarker=p;
+	map.setCenter(showmarker.getPosition());
+	showmarker.setTop(true);
+	//alert("smartlightinterface.jsp?type=detailinfo&stationid="+p.data.stationid);
+	node_id = p.data.node_id;
+	firstquery=true;
+	QueryMapInfo();
+}
+
+function QueryMapInfo(){
+	robotservice.callrobotservice("BaiduMapServerice","QueryMapInfo",
+			{"areaid":areaid,"stationid":node_id,"firstquery":firstquery},
+			showQueryMapInfo,
+			this,false);
+}
+function showdetailinfo(data,_mark){
+	var sContent =	"";
+	if(data.realdata.length>0){
+		for(var j=0;j<data.devicedata.length;j++){
+			sContent +=	"<h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+data.devicedata[j].devicename
+				+"&nbsp;&nbsp;&nbsp;采集时间:"+data.realdata[0].uptime+"</h4><table width='100%'>" ;
+			var icount=0;
+			for (var i=0;i<data.realdata.length;i++){
+				if(data.devicedata[j].code==data.realdata[i].protocelcode&&(data.realdata[i].targettype=="4"||data.realdata[i].targettype=="3")){
+				if(icount==0){
+					sContent=sContent+"<tr>";
+				}
+				var val=data.realdata[i].targetvalue;
+				if(data.realdata[i].targettype=="3"){
+					if(data.realdata[i].unit!=null){
+						val=val+data.realdata[i].unit;
+					}
+				}else{
+					if(data.realdata[i].targettype=="4"){
+						
+					}
+				}
+				if(icount%2==0){
+					sContent=sContent+"<td bgcolor=\"#F4F5F5\"'>"+data.realdata[i].targetname+"</td><td bgcolor=\"#F4F5F5\">"+val+"</td>";
+				}else{
+					sContent=sContent+"<td bgcolor=\"#D4DED9\"'>"+data.realdata[i].targetname+"</td><td bgcolor=\"#D4DED9\">"+val+"</td>";	
+				}
+				if((icount+1)%4==0&&icount>0){
+					sContent=sContent+"</tr><tr>";
+				}
+				icount++;
+				}
+			}
+			sContent=sContent+"</tr></table>" ;
+		}
+		sContent="<iframe id='gis_iframe' src='gis_detail.html' style='width:800px;height:600px;min-height:100px;min-width:200px;overflow:auto' scrolling='auto' frameborder='0' ></iframe>";
+		var infoWindow = new BMap.InfoWindow(sContent,{width:1024});  // 创建信息窗口对象
+		_mark.openInfoWindow(infoWindow);
+ 		infoWindow.addEventListener("click",function(e){
+	 		lastclicktime= new Date();//设置操作时间，以防止在操作时，进行数据加载
+ 		});
+ 
+		$("#gis_iframe").load(function() {
+			try {
+				this.contentWindow.setCallParam(data,null);
+			} catch(err) {
+			}
+ 		});
+		//  alert(sContent);
+	}
+}//~showdetailinfo
+
+function showQueryMapInfo(data,callobj){
+	if(data.type=="stationrangeinfo"){
+		var showdata=[];
+		for (var i=0;data.realdata!=null&&i<data.realdata.length;i++){
+			data.realdata[i].lng=data.realdata[i].longitude;
+			data.realdata[i].lat=data.realdata[i].latitude;
+			showdata.push(data.realdata[i]);
+		}
+		// addMapControl();
+		displaylevel=4;
+		changemapstyle();
+		showmapinfo(showdata);
+	}else if(data.type=="areadetailstatic"){
+		
+		var showdata=[];
+		for (var i=0;data.data!=null&&i<data.data.length;i++){
+			data.data[i].lng=data.data[i].longitude;
+			data.data[i].lat=data.data[i].latitude;
+			showdata.push(data.data[i]);
+		}
+		// addMapControl();
+		displaylevel=4;
+		changemapstyle();
+		showmapinfo(showdata);
+	}else if(data.type=="stationinfo"){
+		
+		showdetailinfo(data,showmarker);
+	}
+}
+/*]]>*/
+</script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini" onload="initMap();"
+	style="background-color: #ecf0f5;">
+	<img id="progressImgage" class="ajaxprogress" style="display: none"
+		alt="" th:src="@{/images/ajax-loader.gif}" />
+	<div id="maskOfProgressImage" class="ajaxmask" style="display: none"></div>
+	<div style="position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px; border: #ccc solid 1px; font-size: 12px"
+		id="map"></div>
+	<div id="detail-box" class="box-hidden">
+		<div style="width:100px; height: 100px">
+			<span>XXXXXXXXXXXXXXXXX</span>
+		</div>
+	</div>
+</body>
+</html>

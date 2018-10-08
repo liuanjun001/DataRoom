@@ -1,0 +1,322 @@
+@CHARSET "UTF-8";
+
+
+iframe.collapse{
+	width:calc(100% - 43px);
+}
+
+/** 字体的大小字体样式 **/
+.page-sidebar .sidebar-menu a{
+	font-family:"Microsoft YaHei";
+	font-size:14px;
+}
+
+.page-sidebar .sidebar-menu >li>a>span,
+.page-sidebar .sidebar-menu >li>a>i{
+	font-size:14px;
+}
+
+.page-sidebar .sidebar-header-wrapper{
+	margin-left:0px;
+}
+
+.header-wrap{
+	justify-content:space-between;
+    text-align:center;
+    z-index:2;
+    width:265px;
+}
+
+.collapse-icon{
+	display:block;
+	line-height:40px;
+	font-size:18px;
+	margin-left:10px;
+	margin-right:10px;
+}
+
+.page-content{
+	margin-left:0px;
+}
+
+
+.company_line{
+	line-height:60px;
+}
+
+.page-sidebar .sidebar-menu a{
+	height:40px;
+	line-height:38px;
+}
+
+
+.page-sidebar .sidebar-header-wrapper span {
+	line-height: 40px;
+	margin-left:10px;
+}
+
+.page-sidebar .sidebar-menu li:before{
+    left: 0px;
+}
+
+.page-container{
+	display:flex;
+}
+
+.page-sidebar .sidebar-menu{
+	width: 265px;
+	margin-left:0px;
+}
+
+
+/** iframe样式  **/
+iframe{
+	border-width: 0px;
+    border-style: inset;
+    border-color: initial;
+    border-image: initial;
+    width:calc(100%);
+}
+
+.page-sidebar:before{
+	width:auto;
+	position:initial;
+}
+
+.page-sidebar{
+	position:initial;
+	width:auto;
+	
+}
+
+.hiddenblock{
+	width:10px;
+	height:1100px;
+	display:block;
+	z-index:2;
+    position: absolute;
+    float: left;
+    background-color: rgb(255, 255, 255);
+    opacity: 0;
+}
+
+
+/** 测滑菜单栏的padding **/
+.page-sidebar .sidebar-menu .submenu>li>a {
+	padding-left: 15px;
+}
+
+.page-sidebar .sidebar-menu .submenu>li .submenu>li>a {
+    padding-left: 30px;
+}
+
+.page-sidebar .sidebar-menu .submenu>li .submenu>li .submenu>li>a {
+	padding-left: 45px;
+}
+
+.page-sidebar .sidebar-menu .submenu>li .submenu>li .submenu>li .submenu>li>a
+	{
+	padding-left: 60px;
+}
+
+
+.page-sidebar.menu-compact{
+	width:auto;
+	position: absolute;
+    float: left;
+    z-index: 2;
+}
+
+
+.page-sidebar .sidebar-menu a{
+	padding: 0 16px 0 2px;
+}
+
+.page-sidebar.menu-compact .sidebar-menu>li:hover>a>.menu-text{
+	padding-left:30px;
+}
+
+
+.page-sidebar.menu-compact .sidebar-menu>li>.submenu li>a {
+	padding-left:30px;
+}
+
+.page-sidebar.menu-compact .sidebar-menu .submenu>li .submenu>li>a{
+	padding-left:40px;
+}
+
+.page-sidebar.menu-compact .sidebar-menu .submenu>li .submenu>li .submenu>li>a {
+	padding-left: 50px;
+}
+
+.page-sidebar.menu-compact .sidebar-menu .submenu>li .submenu>li .submenu>li .submenu>li>a{
+	padding-left: 60px;
+}
+
+.page-sidebar.menu-compact .sidebar-menu li:after{
+	display: none;
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0px	;
+    width: 40px;
+    max-width: 40px;
+    overflow: hidden;
+    background: linear-gradient(to right, #2dc3e8ff , #272b2e00 );
+}
+
+.page-sidebar.menu-compact .sidebar-menu li.active:after{
+	display:block;
+}
+
+/** company_logo class **/
+.company_logo{
+	height:60px;
+	width:162px;
+	background-repeat:no-repeat;
+	margin-left:31px;
+	background-position: center;
+}
+
+li.csstheme{
+	flex-wrap:wrap;
+    flex-direction:row;
+	display:flex;
+}
+
+li.csstheme > li:first-child{
+	margin-left:5px;
+}
+
+li.csstheme > li + li {
+	margin-left:5px;
+	margin-right:5px;
+} 
+
+ul.nav > li > a {
+	font-size:14px;
+}
+
+.nolink:hover{
+	background:#ffffff !important;
+	cursor:default;
+}
+
+.li_theme:hover > ul.themelist{
+	display:block !important;
+}
+
+
+span.number{
+	background-color: red;
+    width: 32px;
+    height: 32px;
+    color: #fff;
+    border-radius: 16px;
+    line-height: 32px;
+    text-align: center;
+    position: absolute;
+    top: 8px;
+    left: 58px;
+}
+
+
+.font-10px{
+	font-size:20px !important;
+	transform:scale(0.5);
+}
+
+
+.dropdown-menu.user-abosulte{
+	position:absolute;
+	left:-47.5px;
+	min-width:150px;
+	border-radius:0px !important;
+	background-color:#fff;
+	box-shadow: 0px 0px 0px #fff !important;
+    -webkit-box-shadow: 0px 0px 0px #fff !important;
+}
+
+ul.themelist{
+	position: absolute;
+	background-color:white;
+	display: block;
+	left: -150px;
+    top: 36px;
+	min-width:150px;    
+	border-radius:0px !important;
+	box-shadow: 0px 0px 0px #fff !important;
+    -webkit-box-shadow: 0px 0px 0px #fff !important;
+}
+
+ul.themelist > li+li{
+	margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+
+li.themeItem{
+	display:flex;
+	justify-content: center;
+	cursor:pointer;
+	align-items:center;
+}
+
+li.themeItem > a.color-name{
+	line-height: 1.42857143;
+	padding: 3px 11px;
+	margin:0;	
+}
+
+li.themeItem > a.color-name:hover{
+	background-color:#fff !important;
+}
+
+/** 颜色块大小 **/
+.colorblock-size{
+	display: block;
+    width: 12px;
+    height: 12px;
+    margin:0 !important;
+    padding: 0 !important;
+} 
+
+li.divider{
+	width: 125px;
+    margin: 5px auto !important;
+}
+
+/** 菜单栏不需要圆角 **/
+.navbar{
+	border-radius:0px !important;
+	margin-bottom:0px;
+}
+
+/** 未缩放时的字体 **/
+.page-sidebar .sidebar-header-wrapper>span{
+	display:block;
+	font-size:16px;
+}
+
+/** 缩放时隐藏字体 **/
+.page-sidebar.menu-compact .sidebar-header-wrapper>span{
+	display:none;
+}
+
+/** 下拉框字体大小字体居中 **/
+.dropdown-menu.user-abosulte li>a{
+	text-align:center;
+	font-size:14px;
+}
+
+/** 导航栏行高 **/
+.nav>li{
+	line-height:40px;
+}
+
+
+/** 头部文字的宽度 **/
+.page-sidebar.menu-compact .sidebar-header-wrapper:hover{
+	width:42px;
+}

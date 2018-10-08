@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <head>
+ <!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"	name="viewport" />
+<title th:text="#{system.systemname}"></title>
+<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon" />
+<link rel="stylesheet" th:href="@{/js/easyui/themes/bootstrap/easyui.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/js/JQueryUi/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+<link rel="stylesheet" th:href="@{/css/DataRoom.css}" />
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+<link rel="stylesheet" th:href="@{/css/daterangepicker.css}" />
+<link rel="stylesheet" th:href="@{/css/base.css}" />
+<link rel="stylesheet" th:href="@{/css/dark-skins.css}" />
+<style th:inline="text">
+
+ .chartitem{
+ display:flex;
+ width:300px;
+ height:300px;cursor:pointer;
+ }
+ 
+ </style>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/JQueryUi/jquery-ui.min.js}"></script>
+<script th:src="@{/js/easyui/jquery.easyui.min.js}"></script>	
+<script th:src="@{/js/moment.js}"></script>
+<script  th:src="@{/js/daterangepicker.js}"></script>
+<script  th:src="@{/js/bootstrap.min.js}"></script>
+<script  th:src="@{/js/DataRoomService.js}" type="text/javascript"></script>
+<script type="text/javascript"  th:src="@{/js/jquery.dataTables.js}"></script>
+<script type="text/javascript"  th:src="@{/js/DataRoomComm.js}"></script>
+
+<script  th:src="@{/js/echarts.min.js}" type="text/javascript"></script>
+<script  th:src="@{/js/theme/shine.js}" type="text/javascript"></script>
+<script type="text/javascript"  th:src="@{/js/compent/DataRoomAddressTree.js}"></script>
+<script th:inline="javascript" type="text/javascript">
+/*<![CDATA[*/
+
+ function init(){
+	 DataRoomService.loginPage=/*[[#{system.loginpage}]]*/; 
+	 DataRoomService.baseurl=/*[[@{/}]]*/;
+	DataRoomComm.baseurl=/*[[@{/}]]*/;
+	 $("#leftPanel").addresstree({checkbox:true,checkroot:true,cascadeCheck:false,onCheck:addresstreecheck,muiltselect:true});
+
+	 
+	 
+}
+ function addresstreecheck(node, checked){
+	 var nodes=$("#leftPanel").addresstree("getChecked");
+ 
+	 var addressids="";
+	 for(var i=0;nodes!=null&&i<nodes.length;i++){
+		 addressids+=","+nodes[i].id;
+	 }
+	 if(addressids.length>1){
+		 addressids=addressids.substr(1);
+
+			DataRoomService.callDataRoomService("EnergyService","QueryAddressRealTargets",{addressids:addressids},  refreshQueryAddressRealTargets,this,true);
+
+	 }else{
+		 showRoomData(null); 
+	 }
+ }
+ function refreshQueryAddressRealTargets(data,callobj){
+	 showRoomData(data);
+ }
+function showRoomData(data){
+	var contentPanel=$("#contentPanel");
+	contentPanel.empty();
+	if(data!=null&&data.length>0){
+		var toppos=0;
+	for(var i=0;i<data.length;i++){
+		var charthtml="";
+		for(var j=0;j<data[i].data.length;j++){
+			charthtml+="<div class='chartitempaneldiv'><div   class='chartitem-title'><span >"+data[i].data[j]["targetname"]+"</span></div><div class='chart' id='datachart"+i+"-"+j+"'  ></div></div>"
+		}
+		var html="<div   id='dataPanel"+i+"' "+(i>=1?"style='margin-top:20px'":"")+" ><div class='DataPanelTitle' ><div class='DataTitle'>"+data[i].addressname+"能耗指标-当前状态"+"</div></div><div><div  style='display: flex; flex-wrap: wrap;'>"+charthtml+"</div></div></div>";
+		contentPanel.append(html);
+		
+		for(var j=0;j<data[i].data.length;j++){
+			var dataitem=data[i].data[j];
+			var addressid=data[i].addressid;
+			var  mychart = echarts.init(document.getElementById('datachart'+i+'-'+j),"shine");
+			var maxvalue=dataitem["designvalue"];
+			var nomarlvalue=dataitem["targetedvalue"];
+			var warnvalue=dataitem["threshold"];
+			var thresholdtype=dataitem["thresholdtype"];
+			var goodvalue=nomarlvalue/maxvalue;
+			var badvalue=warnvalue/maxvalue;
+			var displaycolor= [ //表盘颜色
+				 [goodvalue, "#00c1de" ],//0-50%处的颜色
+				 [ badvalue, "#feaa27" ],//51%-70%处的颜色
+			 	[ 1,"#de533e" ]//90%-100%处的颜色
+			];
+			if(thresholdtype>=3){
+				displaycolor= [ //表盘颜色
+					 [badvalue, "#de533e" ],//0-50%处的颜色
+					 [ goodvalue, "#feaa27" ],//51%-70%处的颜色
+				 	[ 1,"#00c1de" ]//90%-100%处的颜色
+				 	];
+			}
+			option = {
+				    tooltip : {
+				        formatter: "{a} <br/>{b} : {c}"
+				    },
+				    toolbox: {
+				        feature: {       
+				        }
+				    },
+				   
+				    series: [
+				        {
+				            name: dataitem["targetname"],
+				            type: 'gauge',min:0,max:maxvalue,
+				            axisLine :{
+				            	show : true,
+				            	lineStyle : { // 属性lineStyle控制线条样式
+				            		 color :displaycolor,
+				            		 width : 15
+				            	}
+				            },
+				            axisLabel:{
+				            	color:'#666666',
+				            	distance :5
+				            },
+				            detail:{
+				            	 fontFamily :"Arail",
+				            	formatter:"{value}",
+						    	offsetCenter:[0,"65%"],
+						    	color:'#666666',
+						    	//backgroundColor:'#000000',
+						    	 width:65,
+						    	height:40
+						    	 
+						    },
+				            //data: [{value: dataitem["targetvalue"], name:dataitem["targetname"]}]
+						    data: [{value: dataitem["targetvalue"]}]
+				        }
+				    ]
+				};
+	
+		 mychart.setOption(option, true);
+		 var mychartdiv=$('#datachart'+i+'-'+j);
+		 mychartdiv.data("addressid",addressid);
+		 mychartdiv.data("targetid",dataitem.targetid);
+		 mychartdiv.on("click",function(param){
+			 var o=$(this).data();
+			 document.location.href="targetdetail.html?addressid="+o.addressid+"&targetid="+o.targetid;  
+		 })
+		}
+		
+	
+		
+	}
+		}else{
+			contentPanel.append("<span>暂无数据，请重新选择要查看实时数据的位置信息！</span>");
+		}
+	$("canvas").css("cursor","pointer");
+}
+/*]]>*/
+</script>
+</head>
+<body  onload="init();" >
+<img id="progressImgage" class="ajaxprogress" style="display:none" alt="" th:src="@{/images/ajax-loader.gif}"/> 
+<div id="maskOfProgressImage" class="ajaxmask" style="display:none"></div> 
+<div class="app-margin">
+<div>
+ 
+<div   class="yl-header"><div   class="top-line">
+<div   class="top-left">
+<div   class="headline"></div>
+ <div   class="headspan">能耗指标-当前状态</div>
+ </div> <div   class="yl-button-group" style="width: 500px;"></div>
+ </div>
+ </div>
+ <div   class="modify-divider" style="display:none"></div>
+ 
+<div class="modify-content" style="display: flex; padding: 20px 0px 50px; overflow: auto;min-width:800px">
+<div id="leftPanel" class="location-block" style="overflow: auto; width: 330px;background-color:#fff">
+ 
+</div>
+<div  id="contentPanel" style="margin-left: 10px; width: calc(100% - 330px);">
+ 
+</div>
+</div>
+</div>
+</div>
+ 	</body>
+</html>

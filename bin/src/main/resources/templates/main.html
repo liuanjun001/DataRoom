@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+  <head>
+<!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js">
+</script>
+<![endif]-->
+
+    <meta charset="utf-8" />
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=11">-->
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <title th:text="#{system.systemname}"></title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="css/bootstrap-table.min.css" />
+	<link rel="stylesheet" href="css/jquery.dataTables.min.css" />
+
+    <link rel="stylesheet" href="css/ybmps.css" />
+    <link rel="stylesheet" href="css/_all-skins.css" />
+	<link rel="stylesheet" href="fonts/css/font-awesome.min.css" />
+   	<link rel="stylesheet" href="css/frmtab.css" />
+    
+    <script src="js/browser.js" type="text/javascript"></script>
+    <script src="js/tabmgr.js" type="text/javascript"></script>
+    <script th:inline="javascript" type="text/javascript">
+	/*<![CDATA[*/
+		if(Browser.client.name=="IE"&&parseFloat(Browser.client.version)<9){
+			window.location.href="downloadgoogle.html";
+		}
+	/*]]>*/
+	</script>
+	<script src="js/jquery-1.12.4.min.js" type="text/javascript"></script>
+	<script src="js/app.min.js" type="text/javascript"></script>
+	<script src="js/RobotComm.js" type="text/javascript"></script>
+	<script src="js/menucompNoNav.js" type="text/javascript"></script>
+	<script src="js/userpwdcomp.js" type="text/javascript"></script>
+	<script src="js/robotservice.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/jquery.dataTables.js"></script>
+    <script src="js/mycustomreport.js"></script>
+
+    <script src="js/jquery.slimscroll.min.js"></script>
+	<script th:inline="javascript" type="text/javascript">
+	/*<![CDATA[*/
+	//initPageShow();
+	robotservice.robotuserid =/*[[${session.userid}]]*/null;
+	robotservice.robotroleid =/*[[${session.roleid}]]*/null;
+	robotservice.baseurl="./";
+	var curskinname = "skin-blue";
+	var curselectmenu;
+
+	function initmenu() {
+	    if (localStorage) {
+	        var skinname = localStorage.getItem("curskinname");
+	        if (skinname != null && curskinname != skinname) {
+	            fchangeskin(skinname);
+	        }
+	    }
+
+	    //初始化菜单
+	   
+		robotservice.callrobotservice("LoginService","QueryUserWebMenu",{},function(data){
+	        var menuid = 0;
+	        
+	        $.each(data, function(infoIndex, info) {
+	            var htmlstr = rendermenu(menuid, info);
+	            $("ul.sidebar-menu").append(htmlstr);
+	        });
+	        
+	        initlocalStorageparam();
+	    });
+	var showalarmstatic=/*[[${session.showalarmstatic}]]*/false;
+ 	if(showalarmstatic){
+		staticwarnlevel();
+		var refreshrealwarnid=window.setInterval( staticwarnlevel,15000);
+ 		}
+	}	
+
+	
+	function staticwarnlevel() {
+	    //告警级别统计
+	    robotservice.callrobotservice("RTWarnService", "QueryRealWarnLevelReport", {}, showstaticwarnlevel, this, false);
+	}
+
+	function showstaticwarnlevel(data, callobj) {
+	    if (data != null && data.length > 0) {
+	        for (var i = 0; i < data.length; i++) {
+	            if (data[i].warnname == "一级告警") {
+	                $("#globallevel1info").html(data[i].num);
+	            } else if (data[i].warnname == "二级告警") {
+	                $("#globallevel2info").html(data[i].num);
+	            } else if (data[i].warnname == "三级告警") {
+	                $("#globallevel3info").html(data[i].num);
+	            } else if (data[i].warnname == "四级告警") {
+	                $("#globallevel4info").html(data[i].num);
+	            }
+	        }
+	    }
+	}
+	
+	
+
+	function fchangeskin(skinname) {
+	    $(document.body).removeClass(curskinname);
+	    curskinname = skinname;
+	    $(document.body).addClass(curskinname);
+	    if (localStorage) {
+	        localStorage.setItem("curskinname", skinname);
+	    }
+	}
+	$(window).load(function() {
+	if(localStorage.getItem("reportParam")==null||localStorage.getItem("reportParamtime")==null||((new Date()).getTime()-localStorage.getItem("reportParamtime")>86400000)){
+    	initreportParam();
+    	}
+	}
+	);
+    /**
+     * 初始化报表需要的数据
+     */
+function initreportParam(){
+		robotservice.callrobotservice("commService","GetReportParamDict",{},refreshParam);
+		
+}
+function refreshParam(data){
+try{
+	if(localStorage){
+	localStorage.setItem("reportParam",JSON.stringify(data));
+	localStorage.setItem("reportParamtime",(new Date()).getTime());
+	}
+		//$.cookie("reportParam",JSON.stringify(data), { expires: 7 });
+		
+}catch(e){
+	console.log(e.toString());
+}
+}
+
+function showtimetitle(){
+	$("#label_title").html();
+}
+	
+	 /*]]>*/
+	</script>
+	
+  </head>
+  <body class="hold-transition skin-blue sidebar-mini" onload="initmenu();">
+  	<img id="progressImgage" class="ajaxprogress" style="display:none" alt="" src="images/ajax-loader.gif"/> 
+<div id="maskOfProgressImage" class="ajaxmask" style="display:none"></div> 
+    <div class="wrapper">
+
+       <header class="main-header">
+        <!-- Logo -->
+        <a href="main.jsp" class="logo">
+          <!-- mini logo for sidebar mini 50x50 pixels -->
+          <span class="logo-mini"><b th:text="#{system.simpleenname}">DH</b></span>
+          <!-- logo for regular state and mobile devices -->
+          <span class="logo-lg"><b th:text="#{system.simplename}">智慧路灯</b></span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top"  role="navigation">
+          <!-- Sidebar toggle button-->
+           
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+           <div class="navbar-custom-menu" >
+             <ul class="nav navbar-nav">
+			  <li class="dropdown tasks-menu">
+				<a th:href="#{LoginPage}" >
+                  <i class="fa fa-sign-out"> <strong th:text="#{system.logout}">退出</strong></i>
+                </a>
+			  </li>
+            </ul>
+          </div>
+           <div class="navbar-custom-menu" >
+             <ul class="nav navbar-nav">
+              <li class="dropdown tasks-menu">
+                <a href="help.html#main" target="_blank">
+                  <i class="fa fa-exclamation-circle" ><strong th:text="#{system.help}">帮助</strong></i>
+                </a>
+              </li>
+               </ul>
+           </div>
+                     <div class="navbar-custom-menu" >
+             <ul class="nav navbar-nav">
+              <!-- Tasks: style can be found in dropdown.less -->
+                 <li class="dropdown">
+ 
+                <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" >
+                  <i class="glyphicon glyphicon-user"></i> <strong th:text="${session.username}">username</strong><span class="caret"></span>
+                </a>
+                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel"> 
+			         <li><a href="#" onclick="fchangepassword();" th:text="#{system.modifypassword}">修改密码</a></li> 
+			         <li><a href="#" onclick="fchangereportset();" th:text="#{system.customreport}">自定义报告</a></li> 
+			         <li class="divider backcolor"></li>
+			          <li><a href="#" onclick="fchangeskin('skin-blue');">蓝色</a></li>
+			           <li><a href="#" onclick="fchangeskin('skin-blue-light');">亮蓝</a></li> 
+			           <li><a href="#" onclick="fchangeskin('skin-yellow');">黄色</a></li> 
+			           <li><a href="#" onclick="fchangeskin('skin-yellow-light');">亮黄</a></li> 
+			           <li><a href="#" onclick="fchangeskin('skin-green');">绿色</a></li> 
+			           <li><a href="#" onclick="fchangeskin('skin-green-light');">亮绿</a></li> 
+			           <li><a href="#" onclick="fchangeskin('skin-purple');">紫色</a></li>
+			           <li><a href="#" onclick="fchangeskin('skin-purple-light');">亮紫</a></li>
+			           <li><a href="#" onclick="fchangeskin('skin-red');">红色</a></li>
+			           <li><a href="#" onclick="fchangeskin('skin-red-light');">亮红</a></li>
+			            <li><a href="#" onclick="fchangeskin('skin-black');">黑色</a></li>
+			           <li><a href="#" onclick="fchangeskin('skin-black-light');">亮黑</a></li>
+			     </ul> 
+             </li>
+              </ul>
+           </div>
+           <th:block th:if="${session.showalarmstatic==true}">
+          
+           <div class="navbar-custom-menu" >
+            <ul class="nav navbar-nav" style="padding-top: 13px;">
+             <li class="dropdown" >
+            <span class="badge" id="globallevel1info" style="background-color:#ff0000;color:#ffffff">0</span> <span class="badge" id="globallevel2info" style="background-color:#ffae00;color:#ffffff">0</span> <span class="badge" id="globallevel3info" style="background-color:#f6ff00;color:#5bc0de">0</span> <span class="badge" id="globallevel4info" style="background-color:#26c0fe;color:#ffffff">0</span>
+            </li>
+            </ul>
+           </div>
+           </th:block>
+  			        <div class="navbar-custom-menu" >
+             <ul class="nav navbar-nav">
+			  <li class="dropdown tasks-menu">
+				<a href="javascript:void();" >
+                 <strong id="label_title">数据将在5秒后刷新</strong>
+                </a>
+			  </li>
+            </ul>
+         </div>
+        </nav>
+      </header>
+      <!-- Left side column. contains the logo and sidebar -->
+<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar">
+<section class="sidebar">
+ <!-- sidebar menu: : style can be found in sidebar.less //-->
+   <ul class="sidebar-menu">
+   </ul>
+   </section>
+ </aside>
+ <div class="content-wrapper"  style="padding-bottom:1px;" >
+<!-- content //-->
+<iframe id="iframe_box" style="width:100%;height:100%;min-height:600px;min-width:200px;overflow:auto" scrolling="auto" frameborder="0"> </iframe>
+</div>
+     <footer class="main-footer" style="bottom: 0px;">
+        <div class="pull-right hidden-xs">
+          <b id="verShow">Version 1.0.21</b>
+        </div>
+        <small>Copyright &copy; 2018 <a href="#" th:text="#{system.companyname}">苏州云博</a> All rights reserved.</small>
+     </footer>
+
+      <div class="control-sidebar-bg"></div>
+    </div><!-- ./wrapper -->
+
+
+  </body>
+</html>

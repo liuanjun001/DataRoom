@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+    <title th:text="#{system.systemname}"></title>
+    <link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}"/>
+    <link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}"/>
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/css/ybmps.css}"/>
+    <link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/realstatefrmtab.css}"/>
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+             folder instead of downloading all of them to reduce the load. -->
+
+    <link rel="stylesheet" th:href="@{/css/_all-skins.css}"/>
+    <link rel="stylesheet" th:href="@{/css/daterangepicker.css}"/>
+    
+    <!-- switchery component -->
+    <link rel="stylesheet" th:href="@{/css/switchery.min.css}"/>
+    <script th:src="@{/js/switchery.min.js}" type="text/javascript"></script>
+    <style th:inline="text">
+        body {
+            overflow: auto;
+            font-family: "Hiragino Sans GB";
+        }
+
+        .unfinsh_state {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            line-height: 24px;
+            color: #ffffff;
+            font-size: 12px;
+            border-style: solid;
+            border-width: 0px;
+            background-color: #666666;
+            border-radius: 12px;
+        }
+
+        .finsh_state {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            line-height: 24px;
+            color: #ffffff;
+            font-size: 12px;
+            border-style: solid;
+            border-width: 0px;
+            background-color: rgb(30, 255, 30);
+            border-radius: 12px;
+        }
+
+        fieldset {
+            border: 1px solid rgb(187, 189, 202);
+            margin-top: 16px;
+            padding: 8px;
+            border-radius: 2px;
+        }
+
+        legend {
+            font-size: 14px;
+            width: auto;
+        }
+        .skin-blue .pop-title {
+        		background: #222d32;
+        		color: #fff;
+        		padding: 5px 10px 5px 15px;
+        }
+        
+        .pop-line-table{
+        		display: table;
+        		width: 100%;
+        		padding: 10px 2px 10px 2px;
+        		
+        }
+        .pop-line-row{
+        		display: table-row;
+        }
+        .pop-line-cell{
+        		display: table-cell;
+        		padding-top: 5px;
+			padding-bottom: 2px;
+        }
+        .text-blank-line{
+        		border-bottom: 1px solid #ccc;
+        }
+        
+        .text-prompt{
+        		width: 30%;
+        		text-align: center;
+        }
+        .text-value{ 
+        		width: 70%;
+        		padding-left: 2px;
+        }
+        .button-control{
+        		text-align: center;
+        }
+        .button-control img{
+        		width: 64px;
+			border: 1px solid #ccc;
+			padding: 5px 18px 5px 18px;
+			border-radius: 5px;
+        }
+        
+        .pop-box-icon{
+        		display: inline-block;
+			width: 12px;
+			height: 12px;
+			background-color: #fbeb84;
+			margin: 0px 6px 0px 12px;
+			border: 1px solid #ccc;
+        }
+        
+        .pop-box-time-val{
+	        display: inline-block;
+			text-align: right;
+			width: 80%;
+			padding-right: 20px;
+		}
+		
+		.pop-box-time{
+			padding-top: 10px;
+			padding-bottom: 10px;
+			border-top: 1px solid #ccc;
+		}
+		
+		.pop-box-data{
+			padding-top: 3px;
+			padding-bottom: 15px;
+		}
+		
+		.pop-box-data-row{
+			width: 100%;
+			padding-top: 3px;
+			padding-bottom: 5px;
+			border-top: 1px solid #ccc;
+		}
+		.pop-box-data-cell{
+			width:49%;
+			display: inline-block;
+		}
+		
+		.pop-box-data-cell .text-prompt{
+			width: 50%;
+			display: inline-block;
+			text-align: left;
+		}
+		.pop-box-data-cell .text-value{
+			font-weight: bold;
+			
+		}
+		
+		.pop-ctrl-box{
+			padding: 15px 15px 0px 15px;
+		}
+		.pop-ctrl-plus, .pop-ctrl-add{
+			display:inline-block;
+			font-size: 20px;
+			color: #222d32;
+			width: 15%;
+			padding-left: 10px;
+		}
+		
+		.pop-ctrl-plus>img, .pop-ctrl-add>img{
+			vertical-align: bottom;
+			width: 20px;
+			padding-bottom: 6px;
+		}
+		
+		.pop-ctrl-slider{
+			display: inline-block;
+			width: 60%;
+		}
+		
+		.pop-ctrl-slider .slider-handle {
+			background: no-repeat;
+			border-radius: 10px;
+			background-color: #222d32;
+		}
+		.slider-bar-prompt {
+			padding: 0px 15px 5px 15px;
+			text-align: center;
+		}
+		.slider-bar-prompt>div{
+			display: inline-block;
+			width: 30%;
+		}
+		
+		.pop-ctrl-button{
+			padding: 20px 15px 20px 15px;
+			text-align: center;
+		}
+		
+		.pop-ctrl-button>div{
+			display: inline-block;
+			width: 100px;
+		}
+		
+		.pop-ctrl-button-switch{
+			display: inline-block;
+			padding: 5px 50px 5px 5px;
+		}
+		.pop-ctrl-button-exec>button{
+			padding: 5px 10px 5px 10px;
+			background-color: #222d32;
+			color: #fff;
+			border-radius: 10px;
+			border: 1px;
+			width: 100%;
+		}
+    </style>
+    <script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+    <script th:src="@{/JQueryUi/jquery-ui.min.js}"></script>
+    <script th:src="@{/easyui/jquery.easyui.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/echarts.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/theme/shine.js}" type="text/javascript"></script>
+    <script th:inline="javascript" type="text/javascript">
+        /*<![CDATA[*/
+        var closecallback = null;
+
+        function setCallParam(param, callback) {
+            closecallback = callback;
+        }
+        $(document).ready(function(){
+        		$( "#slider" ).slider();
+        		
+        		var elem = document.querySelector('.js-switch');
+        		var switchery = new Switchery(elem);
+        });
+        /*]]>*/
+    </script>
+</head>
+<body onload="init();" style="background-color:#eeedf2;" class="skin-blue">
+	<div class="pop-title">
+		<span>单灯控制器</span>
+	</div>
+	<div class="pop-ctrl-box">
+		<div class="pop-ctrl-plus"><img src="../images/fe-minus.svg"/></div>
+		<div class="pop-ctrl-slider">
+			<div id="slider"></div>
+		</div>
+		<div class="pop-ctrl-add"><img src="../images/fe-plus.svg"/></div>
+	</div>
+	<div class="slider-bar-prompt">
+		<div class="slider-bar-left">0</div>
+		<div class="slider-bar-mid" id="slider-bar-light-value">35%</div>
+		<div class="slider-bar-right">100</div>
+	</div>
+	<div class="pop-ctrl-button">
+		<div class="pop-ctrl-button-switch">
+			<input type="checkbox" class="js-switch " />
+		</div>
+		<div class="pop-ctrl-button-exec">
+			<button>执行</button>
+		</div>
+	</div>
+</body>
+</html>

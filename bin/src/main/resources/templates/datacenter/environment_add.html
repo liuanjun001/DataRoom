@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <head>
+ <!--[if lt IE 9]> 
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"	name="viewport" />
+<title th:text="#{system.systemname}"></title>
+<link rel="stylesheet" th:href="@{/easyui/themes/bootstrap/easyui.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap-table.min.css}" />
+<link rel="stylesheet" th:href="@{/JQueryUi/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery.dataTables.min.css}" />
+<!-- Theme style -->
+<link rel="stylesheet" th:href="@{/css/ybmps.css}" />
+<link rel="stylesheet" th:href="@{/fonts/css/font-awesome.min.css}" />
+<link rel="stylesheet"  th:href="@{/css/realstatefrmtab.css}" />
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+
+<link rel="stylesheet" th:href="@{/css/_all-skins.css}" />
+<link rel="stylesheet" th:href="@{/css/daterangepicker.css}" />
+<style th:inline="text">
+ body { overflow:auto;font-family: "Hiragino Sans GB"; }
+ .unfinsh_state{
+ position: absolute;width:24px;height:24px;text-align:center;line-height:24px;color:#ffffff;font-size:12px;
+ border-style: solid;  border-width: 0px; background-color: #666666;  border-radius: 12px; 
+ }
+ .finsh_state{
+ position: absolute;width:24px;height:24px;text-align:center;line-height:24px;color:#ffffff;font-size:12px;
+ border-style: solid;  border-width: 0px; background-color: rgb(30, 255, 30);  border-radius: 12px; 
+ }
+ fieldset
+{
+  border: 1px solid rgb(187, 189, 202);
+  margin-top: 16px;
+  padding: 8px; border-radius: 2px; 
+}
+
+legend
+{
+  font-size:14px;
+  width:auto;
+}
+ </style>
+<script th:src="@{/js/jquery-1.12.4.min.js}" type="text/javascript"></script>
+<script th:src="@{/JQueryUi/jquery-ui.min.js}"></script>
+<script th:src="@{/easyui/jquery.easyui.min.js}"></script>	
+<script th:src="@{/js/moment.js}"></script>
+<script  th:src="@{/js/daterangepicker.js}"></script>
+<script  th:src="@{/js/bootstrap.min.js}"></script>
+
+<script type="text/javascript"  th:src="@{/js/jquery.dataTables.js}"></script>
+<script type="text/javascript"  th:src="@{/js/RobotJs.js}"></script>
+<script type="text/javascript"  th:src="@{/js/compent/RobotArea.js}"></script>
+<script type="text/javascript"  th:src="@{/js/compent/RobotDeviceInfo.js}"></script>
+<script  th:src="@{/js/echarts.min.js}" type="text/javascript"></script>
+<script  th:src="@{/js/theme/shine.js}" type="text/javascript"></script>
+<script th:inline="javascript" type="text/javascript">
+	/*<![CDATA[*/
+		var closecallback=null;
+function setCallParam(param,callback){
+	closecallback=callback;
+		
+	}
+
+function init(){
+	showcompent();
+}
+function do_finish(){
+	var r=$("#cbarea1")[0];
+	var t=r.RobotArea;
+	console.log($("#cbarea1")[0].RobotArea().val());
+	if(closecallback!=null){
+		closecallback();
+	}
+}
+function showcompent(){
+	//alert( $("input[name='connecttype']:checked").val());
+	var connectype=$("input[name='connecttype']:checked").val();
+	if(connectype=="rtmp"){
+		$(".rtmp").show();
+		$(".threeplatform").hide();
+	}else{
+		$(".rtmp").hide();	
+		$(".threeplatform").show();
+	}
+}
+/*]]>*/
+</script>
+</head>
+<body  onload="init();" style="background-color:#eeedf2;">
+<img id="progressImgage" class="ajaxprogress" style="display:none" alt="" th:src="@{/images/ajax-loader.gif}"/> 
+<div id="maskOfProgressImage" class="ajaxmask" style="display:none"></div> 
+ <div  style='position:fixed;left:50%;margin-left:-200px;top:5px;height:50px;overflow: auto;width:400px'>
+ <div style='position: absolute;top:2px;left:10px;font-size:14px'>选择归属</div>
+ <div style='position: absolute;top:2px;left:110px;font-size:14px'>选择设备</div>
+ <div style='position: absolute;top:2px;left:210px;font-size:14px'>配置属性</div>
+ <div style='position: absolute;top:2px;left:320px;font-size:14px'>完成</div>
+ <div style='position: absolute;top:38px;left:44px;width:276px;height:1.5px;background-color:#000000'></div>
+ <div class="finsh_state" style='top:26px;left:20px;'>1</div>
+ <div class="unfinsh_state" style='position: absolute;top:26px;left:120px'>2</div>
+ <div  class="unfinsh_state" style='position: absolute;top:26px;left:220px'>3</div>
+ <div  class="unfinsh_state" style='position: absolute;top:26px;left:320px'>4</div>
+ </div>
+ <div style='position:absolute;left:4px;right:4px;bottom:40px;top:57px'>
+ <fieldset >
+ <legend>选择归属集中器</legend>
+ <div class="RobotArea" id="cbarea1" data-multiple='false' data-checkbox='false' ></div>
+
+ </fieldset>
+  <fieldset >
+ <legend>选择设备</legend>
+  <div class="RobotDeviceInfo" id="cbdeviceinfo" data-devicetype='5201' data-multiple='false' data-checkbox='false' ></div>
+ </fieldset>
+   <fieldset >
+ <legend>配置属性</legend>
+ <form class="form-horizontal" role="form" style="width:740px">
+  <div class="form-group">
+ <label for="ecc_name" class="col-sm-2 control-label">电表名称:</label>
+ <div class="col-sm-10">
+ <input type="text" class="form-control" id="ecc_name" placeholder="请输入环境采集器名称" />
+ </div>
+ </div>
+ 
+
+  <div class="form-group">
+ <label for="ecc_name" class="col-sm-2 control-label">IP:</label>
+ <div class="col-sm-10">
+ <input type="text" class="form-control" id="ecc_name" placeholder="请输入环境采集器IP" />
+ </div>
+ </div>
+   <div class="form-group">
+ <label for="ecc_name" class="col-sm-2 control-label">Port:</label>
+ <div class="col-sm-10">
+ <input type="number" value="8001" class="form-control" id="ecc_name" placeholder="请输入环境采集器端口" />
+ </div>
+ </div>
+    <div class="form-group">
+ <label for="ecc_name" class="col-sm-2 control-label">地址码:</label>
+ <div class="col-sm-10">
+ <input type="number" value="1" class="form-control" id="ecc_name" placeholder="请输入环境采集器地址码" />
+ </div>
+ </div>
+  </form>
+ </fieldset>
+ </div>
+ <button class="btn" onclick="do_finish();"  type="button" style="position: absolute;bottom:5px;left:50%;margin-left:-34px"><i class="glyphicon glyphicon-floppy-disk"></i>完成</button>
+ 	</body>
+</html>

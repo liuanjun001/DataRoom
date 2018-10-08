@@ -1,0 +1,4 @@
+[
+{"name":"areaid","comment":"项目ID,区域ID","groups":"areainfo,warndata"},
+{"name":"areaname","comment":"项目名称,区域名称","groups":"areainfo,warndata"}
+]
