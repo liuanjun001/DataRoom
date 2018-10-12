@@ -139,6 +139,8 @@
 function  addresstreeselect(node){
 	addressid=node.id;
 	addressname=node.text;
+	$("#lb_target_title").html("【"+addressname+"】指标管理");
+	$("#lb_paramter_title").html("【"+addressname+"】参数管理");
 	console.log(addressname);
 	refreshdata();
 }
@@ -262,7 +264,7 @@ var grid=$("#"+gridid).dataTable(option);
 <div>
 <div   >
 <div   style="display: -ms-flexbox;    display: flex;    -ms-flex-pack: justify;    justify-content: space-between;">
-<span  style="height: 34px;    line-height: 34px; font-weight: 700;">指标管理</span>
+<span  style="height: 34px;    line-height: 34px; font-weight: 700;" id="lb_target_title">指标管理</span>
  
                 <button class="yl-btn pointer blue"  onclick="addTarget();"  >新增指标 </button>
        
@@ -284,10 +286,10 @@ var grid=$("#"+gridid).dataTable(option);
  </table>
  </div>
  
-    <div style="height:10px;"></div>  
+    <div style="height:20px;"></div>  
  <div   >
  <div    style="display: -ms-flexbox;    display: flex;    -ms-flex-pack: justify;    justify-content: space-between;">
-<span style="height: 34px;    line-height: 34px; font-weight: 700;">参数管理</span>
+<span style="height: 34px;    line-height: 34px; font-weight: 700;" id="lb_paramter_title">参数管理</span>
  <button class="yl-btn pointer blue"   onclick="addParam();"  >新增参数 </button>
      </div>
             <div style="height:10px;"></div>      

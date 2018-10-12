@@ -78,6 +78,7 @@ width: calc((100% - 40px) /3);
         '#e5f3fc','#ba55d3','#cd5c5c','#ffa500','#40e0d0',
         '#1e90ff','#ff6347','#7b68ee','#00fa9a','#ffd700',
         '#6699FF','#ff6666','#3cb371','#b8860b','#30e0e0'];
+        var myCharts=[];
   function init(){
 	//  fillchart("chart1");
 	//  fillchart("chart2");
@@ -89,6 +90,12 @@ width: calc((100% - 40px) /3);
  	  addanalyseitem();
  	  addanalyseitem();
  	 adddatetotimeset(new Date());
+	 document.body.onresize= function (){
+		 for(var i=0;i<myCharts.length;i++){
+			 myCharts[i].resize();
+		 }
+		
+	 };
 }
 function gettimeset(){
 	   var timedivs=$(".timediv");
@@ -110,7 +117,9 @@ function gettargetidset(){
 		var targetid=$("#cb_targetid_"+seq).val();
 		if(targetid!=null&&targetid.length>0){
 			var targetname=$("#cb_targetid_"+seq+" option:selected").text();
+			if(retstr.indexOf(addressid+","+targetid+",")<0){
 			retstr+=";"+addressid+","+targetid+","+addressname+"-"+targetname;
+			}
 		}
 		}
 	}
@@ -139,6 +148,12 @@ function fillchart(chartid,data){
 			　　　　 fontSize:14,fontWeight:'bold'  
 			    }
 			},tooltip : { trigger: 'axis'   },
+			 grid: {
+			        left: '20px',
+			        right: '20px',
+			        bottom: '20px',top:'20px',
+			        containLabel: true
+			    },
 		    xAxis: {
 		        type: 'category',
 		        data: xdata
@@ -153,7 +168,7 @@ function fillchart(chartid,data){
 	for(var i=0;i<a_targetidset.length;i++){
 		var a_targetidsetitem=a_targetidset[i].split(",");
 		  var ydata=new Array(xdata.length); 
-		option.series[i]={type:'bar',name:a_targetidsetitem[2],data:ydata,barWidth: '20px'};
+		option.series[i]={type:'bar',name:a_targetidsetitem[2],data:ydata,barMaxWidth: '20px',barCategoryGap:'10%'};
 		targetmap[a_targetidsetitem[0]+"#"+a_targetidsetitem[1]]=i;
 	}
 	var timemap={};
@@ -171,6 +186,7 @@ function fillchart(chartid,data){
 
 	var  myChart = echarts.init(document.getElementById(chartid),"shine");
 	myChart.setOption(option);
+	myCharts[myCharts.length]=myChart;
 }
 function analysedata(){
 	var targetids=gettargetidset();
@@ -189,11 +205,12 @@ function analysedata(){
 function showanalyseAddressTargetResult(data,callobj){
 	$("#content").empty();
 	$("#titlecontent").empty();
+	myCharts=[];
 	var targetids=gettargetidset();
 	var a_targetidset=targetids.split(";");
 	for(var i=0;i<a_targetidset.length;i++){
 		var a_targetidsetitem=a_targetidset[i].split(",");
-		$("#titlecontent").append("<div class='targetiditem' data-index='"+i+"' style='background-color:"+chartcolor[i]+"'></div><div>"+a_targetidsetitem[2]+"</div><div class='cus_w_space'></div>");
+		$("#titlecontent").append("<div class='targetiditem' data-index='"+i+"' style='background-color:"+chartcolor[i]+"'></div><div style='padding-left:10px'>"+a_targetidsetitem[2]+"</div><div class='cus_w_space'></div>");
 	}
 	
 	if(data==null){
@@ -335,14 +352,14 @@ function addanalyseitem(){
 	 $('#begindatetimepicker').datetimepicker("remove");
 	 $('#enddatetimepicker').datetimepicker("remove");
 	 if(timetype=="year"){
-		 $('#begindatetimepicker').datetimepicker({startView:"decade",minView:"decade"});
-		 $('#enddatetimepicker').datetimepicker({startView:"decade",minView:"decade"});
+		 $('#begindatetimepicker').datetimepicker({startView:"decade",minView:"decade",keyboardNavigation:false});
+		 $('#enddatetimepicker').datetimepicker({startView:"decade",minView:"decade",keyboardNavigation:false});
 	 }else if(timetype=="quarter"||timetype=="month"){
-		 $('#begindatetimepicker').datetimepicker({startView:"year",minView:"year"});
-		 $('#enddatetimepicker').datetimepicker({startView:"year",minView:"year"});
+		 $('#begindatetimepicker').datetimepicker({startView:"year",minView:"year",keyboardNavigation:false});
+		 $('#enddatetimepicker').datetimepicker({startView:"year",minView:"year",keyboardNavigation:false});
 	 }else{
-		 $('#begindatetimepicker').datetimepicker({startView:"month",minView:"month"});
-		 $('#enddatetimepicker').datetimepicker({startView:"month",minView:"month"});
+		 $('#begindatetimepicker').datetimepicker({startView:"month",minView:"month",keyboardNavigation:false});
+		 $('#enddatetimepicker').datetimepicker({startView:"month",minView:"month",keyboardNavigation:false});
 	 }
 	
 	  
@@ -402,7 +419,7 @@ function addanalyseitem(){
 			 return;
 		 }
 	 }
-	 var html='<div style="height:44px;display:flex;align-items:center"><div class="timediv" data-val="'+valuedate+'">'+
+	 var html='<div style="height:44px;display:flex;align-items:center"><div class="timediv" onclick="addtimeset();" data-val="'+valuedate+'">'+
 	 displaydate+'</div>'+
 	    '<div class="removebtn removetimebutton" style="width:46px;background-position-x:10px"  ></div></div>';
 		 $(".addtimebutton").before(html);
@@ -498,19 +515,19 @@ function addanalyseitem(){
                             <div class="headline"></div>
                             <div class="headspan">时间选择</div>
                         </div>
-                        <button type="button" class="close" data-dismiss="modal"  onclick="cancel">&times;</button>
+                        <button type="button" class="close" data-dismiss="modal"  >&times;</button>
                     </div>
                     <div style="height: 1px;background-color:#E1E1E1;"></div>
                 </div>
                 <div class="modal-body" style="display:flex;align-items:center">
-    				<div  id="begindatetimepicker" data-date="" data-date-format="yyyy-mm-dd" data-date-language="zh-CN"   data-max-view="4" > </div>
+    				<div  id="begindatetimepicker" data-date="" data-date-format="yyyy-mm-dd" data-date-language="zh-CN" style="height:250px"  data-max-view="4" > </div>
 				 <div>至</div>
-				 <div  id="enddatetimepicker" data-date="" data-date-format="yyyy-mm-dd" data-date-language="zh-CN"   data-max-view="4" > </div>
+				 <div  id="enddatetimepicker" data-date="" data-date-format="yyyy-mm-dd" data-date-language="zh-CN"  style="height:250px"  data-max-view="4" > </div>
                 </div>
                 <div class="modal-footer" style="display:flex;justify-content:space-between">
                     <div  style="width:240px;display:flex;">
                         <button type="button" class="yl-btn blue" data-dismiss="modal"  onclick="selectdate();">确 定</button>
-                        <button type="button" class="yl-btn grey" data-dismiss="modal"  onclick="cancel">取 消</button>
+                        <button type="button" class="yl-btn grey" data-dismiss="modal"  >取 消</button>
                     </div>
                 </div>
             </div>

@@ -63,7 +63,8 @@
 	    }
 	    dateString = newDate.getFullYear() + "-" + monthString + "-" + dayString;
 	    return dateString;
-	}	 
+	}
+var myChart1,myChart2,myChart3,myChart4;
  function init(){
 	 DataRoomService.loginPage=/*[[#{system.loginpage}]]*/; 
 	 DataRoomService.baseurl=/*[[@{/}]]*/;
@@ -74,6 +75,16 @@
 //	 showTargetHistory({"field":[{"targetcode":"PUE","targetname":"PUE","min":0,"max":5}],rs:[{"uptime":"2018-9-1","PUE":4.2},{"uptime":"2018-9-2","PUE":4.3},{"uptime":"2018-9-3","PUE":4.0}]});
 //	 showEnergyHistory({"field":[{"targetcode":"UPS","targetname":"UPS损耗" },{"targetcode":"ZM","targetname":"照明" }],rs:[{"uptime":"2018-9-1","UPS":42.5,"ZM":10},{"uptime":"2018-9-2","UPS":43.5,"ZM":10},{"uptime":"2018-9-3","UPS":46}]});
 //	 showEnergyCurrent({"IT设备":102,"UPS":225,"照明":57});
+	document.body.onresize= function () {
+		    //重置容器高宽
+		   if(myChart1!=null){
+			   myChart1.resize();
+			    myChart2.resize();
+			    myChart3.resize();
+			    myChart4.resize(); 
+		   }
+		   
+		};
 }
  function getQueryString(name) {
 	  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
@@ -154,6 +165,7 @@ function showTargetCurrent(data){
 		};
 
  mychart.setOption(option, true);	
+ myChart1=mychart;
 } 
 function showTargetHistory(data){
 	var rs=data.rs;
@@ -172,14 +184,7 @@ function showTargetHistory(data){
 				    xAxis : [
 				        {
 				            type : 'time',
-				            data:[],
-				             boundaryGap:false,
-				            position: 'bottom',
-				             splitLine: {show: true},
-				              axisLabel: {show:true},
-				            axisTick: {
-				                alignWithLabel: true
-				            }
+				            data:[] 
 				        }
 				    ],
 				    yAxis : [
@@ -243,6 +248,7 @@ function showTargetHistory(data){
 		    }
 			var  myChart = echarts.init(document.getElementById('targethistory'),"shine");
 			myChart.setOption(option);
+			myChart2=myChart;
 	}
 }  
 function showEnergyHistory(data){
@@ -264,12 +270,7 @@ function showEnergyHistory(data){
 				            type : 'time',
 				            data:[],
 				             boundaryGap:false,
-				            position: 'bottom',
-				             splitLine: {show: true},
-				              axisLabel: {show:true},
-				            axisTick: {
-				                alignWithLabel: true
-				            }
+				            position: 'bottom' 
 				        }
 				    ],
 				    yAxis : [
@@ -322,6 +323,7 @@ function showEnergyHistory(data){
 			}
 			var  myChart = echarts.init(document.getElementById('energyhistory'),"shine");
 			myChart.setOption(option);
+			myChart3=myChart;
 	}
 } 
 function showEnergyCurrent(data){
@@ -366,7 +368,7 @@ function showEnergyCurrent(data){
 		        {
 		            name:'参数分布',
 		            type:'bar',
-		            barWidth: '20px',
+		           barMaxWidth: '20px',barCategoryGap:'10%',
 		            data:[ ]
 		        }
 		    ]
@@ -380,6 +382,7 @@ function showEnergyCurrent(data){
 	}else{
 	var  myChart = echarts.init(document.getElementById('energycurrent'),"shine");
 	myChart.setOption(option);
+	myChart4=myChart;
 	}
 }
 var compare = function (prop) {
@@ -413,8 +416,8 @@ var compare = function (prop) {
  </div>
  </div>
  <div   class="modify-divider" style="display:none"></div>
-<div  class="modify-content" style="display: flex; padding: 20px 0px 50px; overflow: auto;min-width:800px">
-<div  id="contentPanel" style="width:100% ;display: flex; flex-wrap: wrap;">
+<div  class="modify-content" style="display: flex; padding: 20px 0px 40px; overflow: auto;min-width:800px">
+<div  id="contentPanel" style="width:100% ;display: flex; flex-wrap: wrap;justify-content: space-between;">
 <div class='chartitempaneldiv' style="margin-left: 0px;margin-top:0px;margin-bottom:5px;width: calc((100% - 20px) / 2);height: calc((100vh - 190px) / 2)">
 <div   class='chartitem-title' style="justify-content:flex-start">
 <span  class="targetnamespan" >PUE</span>-当前

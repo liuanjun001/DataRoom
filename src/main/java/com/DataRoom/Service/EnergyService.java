@@ -246,7 +246,7 @@ public List analyseAddressTarget(@ApiInfo(comment="分析地址的指标集合,a
 	targetmap.put("title", "指标");
 	targetmap.put("data",data);
 	ret.add(targetmap);
-	sql="select a.addressid,a.targetid,a.uptime,a.parametervalue,b.parametername from energy_parameter_day a\r\n" + 
+	sql="select a.addressid,a.targetid,a.uptime,a.parametervalue,b.parametername from energy_parameter_"+datatype+" a\r\n" + 
 			"left outer join energy_parameter_set b on a.addressid=b.addressid and a.parameterid=b.parameterid where "+strwhere ;
 	HashMap tempmap=new HashMap();
 	Connection conn=DBPooL.GetConnection();

@@ -61,6 +61,7 @@
 <script type="text/javascript"  th:src="@{/js/compent/DataRoomAddressTree.js}"></script>
 <script th:inline="javascript" type="text/javascript">
 /*<![CDATA[*/
+	var myCharts=[];
  function init(){
 	 DataRoomService.loginPage=/*[[#{system.loginpage}]]*/; 
 	 DataRoomService.baseurl=/*[[@{/}]]*/;
@@ -68,7 +69,12 @@
 		 //showsliderbar({targetid:"PUE","starttime":"2017-7-28","endtime":"2018-9-14"});
 	// showTargetHistory({"field":[{"targetid":"PUE","targetname":"PUE","min":0,"max":5}],rs:[{"uptime":"2018-8-13","PUE":4.2},{"uptime":"2018-8-14","PUE":4.2},{"uptime":"2018-8-27","PUE":4.2},{"uptime":"2018-8-28","PUE":4.2},{"uptime":"2018-8-29","PUE":4.5},{"uptime":"2018-8-30","PUE":4.2},{"uptime":"2018-9-2","PUE":4.3},{"uptime":"2018-9-3","PUE":4.0}]});
 	 $("#addresstree").addresstree({width:"328px",checkbox:true,checkroot:true,showTitle:false,onSelect:selectaddress,onDblClick: DblClickaddresstree});
- 
+	 document.body.onresize= function (){
+		 for(var i=0;i<myCharts.length;i++){
+			 myCharts[i].resize();
+		 }
+		
+	 };
 }
 var addressid;
 var addressname;
@@ -226,6 +232,7 @@ function showQueryAddressTargetInfoResult(data,callobj){
 				}
 			}
 		var rs=data.rs!=null?data.rs:[];
+		var option;
 	 	if(rs!=null){
 			option = {
 					color:[ '#9487f0' ],
@@ -241,14 +248,7 @@ function showQueryAddressTargetInfoResult(data,callobj){
 					    xAxis : [
 					        {
 					            type : 'category',
-					            data:xdata,
-					             boundaryGap:false,
-					            position: 'bottom',
-					             splitLine: {show: true},
-					              axisLabel: {show:true},
-					            axisTick: {
-					                alignWithLabel: true
-					            }
+					            data:xdata
 					        }
 					    ],
 					    yAxis : [
@@ -331,7 +331,7 @@ function showQueryAddressTargetInfoResult(data,callobj){
 								
 							}
 					}
-					option.series[i]={"name":field[i]["targetname"],'type':"bar","barWidth":15,data:ydata,showSymbol:true, markLine:{
+					option.series[i]={"name":field[i]["targetname"],'type':"bar","barMaxWidth":"20px",barCategoryGap:'10%',data:ydata,showSymbol:true, markLine:{
 				    	itemStyle: {
 		                    normal: { lineStyle: { type: 'dashed', color:'#5ed2ad' },label: { show: true, position:'end',formatter: '{b}: {c}' } }
 		                },data:[{name:"目标",yAxis:targetedvalue}]
@@ -375,8 +375,9 @@ function showQueryAddressTargetInfoResult(data,callobj){
 			    }};
 				var  myChart = echarts.init(document.getElementById(field[0]["targetid"]+'chart'),"shine");
 		 
-
+				myChart.clear();
 				myChart.setOption(option);
+				myCharts[myCharts.length]=myChart;
 		}
 	}  
  function getType(targetid){
@@ -393,6 +394,7 @@ function showQueryAddressTargetInfoResult(data,callobj){
  function showTargetsPanel(data){
 
 	 $("#content").empty();
+	 myCharts=[];
 	 if(data==null||data.length==0){
 		 $("#content").append("<span>此位置无相关指标数据！</span>"); 
 	 }

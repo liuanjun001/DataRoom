@@ -46,14 +46,19 @@
 <script type="text/javascript"  th:src="@{/js/compent/DataRoomAddressTree.js}"></script>
 <script th:inline="javascript" type="text/javascript">
 /*<![CDATA[*/
-
+var myCharts=[];
  function init(){
 	 DataRoomService.loginPage=/*[[#{system.loginpage}]]*/; 
 	 DataRoomService.baseurl=/*[[@{/}]]*/;
 	DataRoomComm.baseurl=/*[[@{/}]]*/;
 	 $("#leftPanel").addresstree({checkbox:true,checkroot:true,cascadeCheck:false,onCheck:addresstreecheck,muiltselect:true});
 
-	 
+	 document.body.onresize= function (){
+		 for(var i=0;i<myCharts.length;i++){
+			 myCharts[i].resize();
+		 }
+		
+	 };
 	 
 }
  function addresstreecheck(node, checked){
@@ -78,6 +83,7 @@
 function showRoomData(data){
 	var contentPanel=$("#contentPanel");
 	contentPanel.empty();
+	myCharts=[];
 	if(data!=null&&data.length>0){
 		var toppos=0;
 	for(var i=0;i<data.length;i++){
@@ -151,6 +157,8 @@ function showRoomData(data){
 				};
 	
 		 mychart.setOption(option, true);
+		 myCharts[myCharts.length]=mychart;
+		 
 		 var mychartdiv=$('#datachart'+i+'-'+j);
 		 mychartdiv.data("addressid",addressid);
 		 mychartdiv.data("targetid",dataitem.targetid);

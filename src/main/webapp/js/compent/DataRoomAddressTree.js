@@ -25,7 +25,7 @@
 	   }
 	   var treeid="tree"+Math.ceil(Math.random()*10000);
 	   opts.treeid=treeid;
-	   $this.append('<div id="'+treeid+'" style="margin:12px 0px 50px 0px;overflow:auto;min-height:'+opts.minHeight+'"></div>');
+	   $this.append('<div id="'+treeid+'" style="margin:12px 0px 50px 0px;overflow:auto;height: calc(100% - 62px);min-height:'+opts.minHeight+'"></div>');
        }	   
 	   var  tree=$("#"+opts.treeid);
 	  tree.tree({

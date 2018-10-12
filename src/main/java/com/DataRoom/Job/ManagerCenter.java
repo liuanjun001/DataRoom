@@ -31,7 +31,12 @@ public class ManagerCenter extends Thread {
 	private ServerSocket serverConn = null;
 	public static HashMap<Session,Integer> sessionmap=new HashMap();
 public void run(){
- 
+ try {
+	sleep(30000);
+} catch (InterruptedException e1) {
+	// TODO 自动生成的 catch 块
+	e1.printStackTrace();
+}
 	String warnport=SpringUtil.getProperty("", "interface.warn.port", "");
 	if(warnport==null) {
 		port=Integer.parseInt(warnport);	
