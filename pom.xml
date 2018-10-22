@@ -81,11 +81,11 @@
 			<artifactId>json</artifactId>
 			<version>20171018</version>
 		</dependency>
- 		<dependency>
+ 		<!-- <dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
 			<version>11.2.0</version>
-		</dependency> 
+		</dependency>  -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>

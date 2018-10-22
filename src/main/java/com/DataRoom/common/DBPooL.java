@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.sql.DataSource;
 
-import oracle.jdbc.OracleCallableStatement;
-import oracle.jdbc.OracleTypes;
+//import oracle.jdbc.OracleCallableStatement;
+//import oracle.jdbc.Types;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -1370,29 +1370,29 @@ public class DBPooL {
 						if ("NUMBER".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.NUMBER);
+									Types.NUMERIC);
 						} else if ("VARCHAR2".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						} else if ("VARCHAR".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						} else if ("DATE".equals(args[2])) {
 							psmt.registerOutParameter(
-									Integer.parseInt(args[0]), OracleTypes.DATE);
+									Integer.parseInt(args[0]), Types.DATE);
 						} else if ("REF CURSOR".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.CURSOR);
+									Types.REF_CURSOR);
 							rsindex = Integer.parseInt(args[0]);
 						}
 
 						else {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						}
 					} else {
 						psmt.setString(Integer.parseInt(args[0]),
@@ -1723,29 +1723,29 @@ public class DBPooL {
 						if ("NUMBER".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.NUMBER);
+									Types.NUMERIC);
 						} else if ("VARCHAR2".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						} else if ("VARCHAR".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						} else if ("DATE".equals(args[2])) {
 							psmt.registerOutParameter(
-									Integer.parseInt(args[0]), OracleTypes.DATE);
+									Integer.parseInt(args[0]), Types.DATE);
 						} else if ("REF CURSOR".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.CURSOR);
+									Types.REF_CURSOR);
 							rsindex = Integer.parseInt(args[0]);
 						}
 
 						else {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						}
 					} else {
 						psmt.setString(Integer.parseInt(args[0]),
@@ -2062,29 +2062,29 @@ public class DBPooL {
 						if ("NUMBER".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.NUMBER);
+									Types.NUMERIC);
 						} else if ("VARCHAR2".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						} else if ("VARCHAR".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						} else if ("DATE".equals(args[2])) {
 							psmt.registerOutParameter(
-									Integer.parseInt(args[0]), OracleTypes.DATE);
+									Integer.parseInt(args[0]), Types.DATE);
 						} else if ("REF CURSOR".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.CURSOR);
+									Types.REF_CURSOR);
 							rsindex = Integer.parseInt(args[0]);
 						}
 
 						else {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						}
 					} else {
 						psmt.setString(Integer.parseInt(args[0]),
@@ -2381,7 +2381,7 @@ public class DBPooL {
 				call.setInt(5, pageSize);
 				call.setInt(6, pageIndex);
 				call.registerOutParameter(7, java.sql.Types.INTEGER);
-				call.registerOutParameter(8, OracleTypes.CURSOR);
+				call.registerOutParameter(8, Types.REF_CURSOR);
 
 				System.out.println("select * from " + tblName + ordby);
 				call.execute();
@@ -2525,61 +2525,7 @@ public class DBPooL {
 		int recordCount = 0;
 		long starttime = System.currentTimeMillis();
 		if ("Oracle".equals(getInstance().DBType)) {
-			try {
-				OracleCallableStatement call = (OracleCallableStatement) conn
-						.prepareCall("{call p_common.P_ShowPage (?,?,?,?,?,?,?,?)}");
-				// call.setString(1, tblName + " aa");
-				tblName = tblName.trim();
-				if (tblName.endsWith(")")) {
-					call.setString(1, tblName + " aa");
-					call.setString(2, "aa.*");
-				} else {
-					call.setString(1, tblName);
-					String tb = tblName.substring(tblName.lastIndexOf(")") + 1);
-					call.setString(2, tb + ".*");
-				}
-				call.setString(3, "");
-				call.setString(4, ordby);
-				call.setInt(5, pageSize);
-				call.setInt(6, pageIndex);
-				call.registerOutParameter(7, OracleTypes.INTEGER);
-				call.registerOutParameter(8, OracleTypes.CURSOR);
-
-				System.out.println("select * from " + tblName + ordby);
-				call.execute();
-				recordproctime(System.currentTimeMillis() - starttime,
-						"P_ShowPage:" + "select * from " + tblName + ordby);
-				recordCount = call.getInt(7);
-				ResultSet rs = (ResultSet) call.getObject(8);
-				ArrayList<HashMap<String, String>> rslist = new ArrayList<HashMap<String, String>>();
-				HashMap<String, String> data = null;
-				while (rs.next()) {
-					data = new HashMap<String, String>();
-					if (arg != null && arg.length > 0) {
-						for (int i = 0; i < arg.length; i++) {
-							data.put(arg[i], rs.getString(arg[i]));
-						}
-					} else {
-						ResultSetMetaData rm = rs.getMetaData();
-
-						for (int i = 0; i < rm.getColumnCount(); i++) {
-							data.put(rm.getColumnName(i + 1).toLowerCase(),
-									rs.getString(rm.getColumnName(i + 1)));
-						}
-
-					}
-					rslist.add(data);
-
-				}
-				ret.put("RecordCount", recordCount);
-				ret.put("pageSize", pageSize);
-				ret.put("pageIndex", pageIndex);
-				ret.put("rs", rslist);
-				System.out.println("RecordCount:" + recordCount + " pageSize:"
-						+ pageSize + " pageIndex:" + pageIndex);
-				rs.close();
-				rs = null;
-			} catch (Exception e) {
+			try { } catch (Exception e) {
 				e.printStackTrace();
 			} finally {
 				if (conn != null)
@@ -2986,9 +2932,9 @@ public class DBPooL {
 				System.out.println("parameters[" + i + "]" + parameters[i]);
 			}
 			psmt.registerOutParameter(parameters.length,
-					oracle.jdbc.OracleTypes.VARCHAR);
+					 Types.VARCHAR);
 			psmt.registerOutParameter(parameters.length + 1,
-					oracle.jdbc.OracleTypes.VARCHAR);
+					 Types.VARCHAR);
 			psmt.execute();
 			ret[0] = psmt.getString(parameters.length);
 			ret[1] = psmt.getString(parameters.length + 1);
@@ -3031,29 +2977,29 @@ public class DBPooL {
 						if ("NUMBER".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.NUMBER);
+									Types.NUMERIC);
 						} else if ("VARCHAR2".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						} else if ("VARCHAR".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						} else if ("DATE".equals(args[2])) {
 							psmt.registerOutParameter(
-									Integer.parseInt(args[0]), OracleTypes.DATE);
+									Integer.parseInt(args[0]), Types.DATE);
 						} else if ("REF CURSOR".equals(args[2])) {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.CURSOR);
+									Types.REF_CURSOR);
 							// rsindex=Integer.parseInt(args[0]);
 						}
 
 						else {
 							psmt.registerOutParameter(
 									Integer.parseInt(args[0]),
-									OracleTypes.VARCHAR);
+									Types.VARCHAR);
 						}
 					} else {
 						psmt.setString(Integer.parseInt(args[0]),
