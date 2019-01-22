@@ -71,6 +71,7 @@
 	            	}
 			  } ,
          checkbox:opts.checkbox,data:opts.data, onLoadSuccess: function (node, data) {
+ 
              //取消checkbox的默认行为
             /* $(this).find('span.tree-checkbox0').unbind().click(function () {
                  return false;
@@ -108,6 +109,8 @@ function selectRoot(callobj){
   var  tree=$("#"+callobj.data("opts").treeid) ;
   var rootnode=tree.tree("getRoot");
 	tree.tree("select",rootnode.target);
+	tree.tree("collapseAll");
+	tree.tree("expand",rootnode.target);
 };
  
 

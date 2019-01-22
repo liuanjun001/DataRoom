@@ -158,6 +158,7 @@ for(int i=0;i<a_filtertype.length;i++) {
  */
 public void syncDevice( ) {
 	String url= SpringUtil.getProperty("", "interface.device.url", "");
+	String version= SpringUtil.getProperty("", "interface.version", "");
 	if(url==null) {
 		return;
 	}
@@ -177,6 +178,45 @@ public void syncDevice( ) {
 			WriteLog.debug("同步Device失败！"+url+"返回数据提示失败:"+resp);
 			return ;
 		}
+		if(version.equalsIgnoreCase("2")) {
+			//新版接口
+			boolean haschange=false;
+			JSONArray dataarray=json.getJSONArray("data") ;
+			List<HashMap<String,String>> dblist=DBPooL.QueryTableToListMap("select * from energy_device");
+			for(HashMap<String,String> item:dblist) {
+				boolean isfound=false;
+				 for(int i=0;i<dataarray.size();i++) {
+					 JSONObject dataitem=dataarray.getJSONObject(i);
+					 if(item.get("deviceid").equals(dataitem.getString("ObjectId")) ) {
+						 if(!item.get("devicename").equals(dataitem.getString("ObjectName"))   ) {
+							 haschange=true;
+							 //如果addressid相同，addressname,type,parentid不同，则做数据更新
+							 DBPooL.ExecSql("update energy_device set devicename=? where deviceid=?  ", dataitem.getString("ObjectName"),dataitem.getString("ObjectId") );
+						 }
+						 dataarray.remove(i);
+						 isfound=true;
+						 syncPoints(dataitem.getString("ControllerId"),item.get("deviceid"));
+						 break;
+					 }
+				 }
+				 if(!isfound) {
+					 haschange=true;
+					 //如果在数据库中存在，在接口数据不存在，则做删除操作
+					 DBPooL.ExecSql("delete from energy_device where   deviceid=?",  item.get("deviceid"));
+				 }
+			}
+			 for(int i=0;i<dataarray.size();i++) {
+				 JSONObject dataitem=dataarray.getJSONObject(i);
+				 haschange=true;
+				 //如果在数据库中不存在，在接口中存在，则做新增
+				 DBPooL.ExecSql("insert into energy_device(addressid,deviceid,devicename,controllerid,controllername )values(?,?,?,?,?)","",dataitem.getString("ObjectId"),dataitem.getString("ObjectName"),"","");
+				 syncPoints(dataitem.getString("ControllerId"),dataitem.getString("Id"));
+			 } 
+			 if(!haschange) {
+				 System.out.println("Device not Change");
+			 }
+		}else {
+			//如果是老版本
 		boolean haschange=false;
 		JSONArray dataarray=json.getJSONObject("data").getJSONArray("Rows");
 		List<HashMap<String,String>> dblist=DBPooL.QueryTableToListMap("select * from energy_device");
@@ -213,6 +253,7 @@ public void syncDevice( ) {
 		 if(!haschange) {
 			 System.out.println("Device not Change");
 		 }
+		 }
 }
 /**
  * 同步点位表
@@ -221,6 +262,7 @@ public void syncDevice( ) {
  */
 public void syncPoints(String controllerid,String deviceid) {
 	String url= SpringUtil.getProperty("", "interface.points.url", "");
+	String version= SpringUtil.getProperty("", "interface.version", "");
 	if(url==null) {
 		return;
 	}
@@ -241,6 +283,44 @@ public void syncPoints(String controllerid,String deviceid) {
 			WriteLog.debug("同步Points失败！"+url+"返回数据提示失败:"+resp);
 			return ;
 		}
+		if(version.equalsIgnoreCase("2")) {
+			//如果是新版接口
+			boolean haschange=false;
+			JSONArray dataarray=json.getJSONArray("data");
+			List<HashMap<String,String>> dblist=DBPooL.QueryTableToListMap("select * from energy_digitaldict where   deviceid='"+deviceid+"'");
+			for(HashMap<String,String> item:dblist) {
+				boolean isfound=false;
+				 for(int i=0;i<dataarray.size();i++) {
+					 JSONObject dataitem=dataarray.getJSONObject(i);
+					 if(item.get("id").equals(dataitem.getString("PropertyId")) &&item.get("deviceid").equals(dataitem.getString("ObjectId"))&&dataitem.getString("Provider").equalsIgnoreCase("Plugin.Env.Providers.Data.Device.Property_Point")) {
+						 if(!item.get("name").equals(dataitem.getString("PropertyName"))  ) {
+							 haschange=true;
+							 //如果addressid相同，addressname,type,parentid不同，则做数据更新
+							 DBPooL.ExecSql("update energy_digitaldict set `name`=? where id=?  and deviceid=?", dataitem.getString("PropertyName"), dataitem.getString("PropertyId"),dataitem.getString("ObjectId"));
+						 }
+						 dataarray.remove(i);
+						 isfound=true;
+						 break;
+					 }
+				 }
+				 if(!isfound) {
+					 haschange=true;
+					 //如果在数据库中存在，在接口数据不存在，则做删除操作
+					 DBPooL.ExecSql("delete from energy_digitaldict where id=? and   deviceid=?", item.get("PropertyId") ,item.get("ObjectId"));
+				 }
+			}
+			 for(int i=0;i<dataarray.size();i++) {
+				 JSONObject dataitem=dataarray.getJSONObject(i);
+				 if(dataitem.getString("Provider").equalsIgnoreCase("Plugin.Env.Providers.Data.Device.Property_Point")) {
+				 haschange=true;
+				 //如果在数据库中不存在，在接口中存在，则做新增
+				 DBPooL.ExecSql("insert into energy_digitaldict(id,controllerid,deviceid,`name`  )values(?,?,?,?)",dataitem.getString("PropertyId"),"",dataitem.getString("ObjectId"),dataitem.getString("PropertyName") );
+			 } 
+				 }
+			 if(!haschange) {
+				 System.out.println("digitaldict not Change");
+			 }	
+		}else {
 		boolean haschange=false;
 		JSONArray dataarray=json.getJSONObject("data").getJSONArray("Rows");
 		List<HashMap<String,String>> dblist=DBPooL.QueryTableToListMap("select * from energy_digitaldict where controllerid='"+controllerid+"' and deviceid='"+deviceid+"'");
@@ -273,6 +353,7 @@ public void syncPoints(String controllerid,String deviceid) {
 		 } 
 		 if(!haschange) {
 			 System.out.println("digitaldict not Change");
+		 }
 		 }
 }
 }

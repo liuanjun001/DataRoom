@@ -167,8 +167,8 @@ function showDeviceListResult(data,callobj){
 	for(var i=0;data!=null&&i<data.length;i++){
 		var deviceid=data[i].controllerid+'.'+data[i].deviceid;
 		 
-		staticbindevice.append('<option value="'+deviceid+'" '+  (paramdata!=null&&paramdata.dynamicbinddeviceid==deviceid?'selected="selected"':'') +'>'+data[i].controllername+'.'+data[i].devicename+'</option>');
-		dynamicbindevice.append('<option value="'+deviceid+'" '+  (paramdata!=null&&paramdata.staticbinddeviceid==deviceid?'selected="selected"':'') +'>'+data[i].controllername+'.'+data[i].devicename+'</option>');
+		staticbindevice.append('<option value="'+deviceid+'" '+  (paramdata!=null&&paramdata.dynamicbinddeviceid==deviceid?'selected="selected"':'') +'>'+data[i].devicename+'</option>');
+		dynamicbindevice.append('<option value="'+deviceid+'" '+  (paramdata!=null&&paramdata.staticbinddeviceid==deviceid?'selected="selected"':'') +'>'+data[i].devicename+'</option>');
 	
 	}
 	staticbindevice.select2({
